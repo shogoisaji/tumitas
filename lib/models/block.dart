@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Block {
-  final Color color;
+  Color color;
   final BlockSize blockSize;
   Block(this.color, this.blockSize);
 }
