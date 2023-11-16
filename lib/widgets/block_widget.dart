@@ -4,12 +4,14 @@ import 'package:tumitas/models/block.dart';
 
 class BlockWidget extends StatelessWidget {
   final Block block;
-  const BlockWidget(this.block, {super.key});
+  final String taskTitle;
+  final double titleFontSize = 12;
+  const BlockWidget(this.block, {super.key, required this.taskTitle});
 
   @override
   Widget build(BuildContext context) {
-    String getBlockName() {
-      return '${block.blockSize.x.toString()}x${block.blockSize.x.toString()}';
+    int titleMaxLine() {
+      return block.blockSize.y * 2;
     }
 
     return Container(
@@ -17,11 +19,21 @@ class BlockWidget extends StatelessWidget {
       child: Container(
           width: block.blockSize.x * oneBlockSize,
           height: block.blockSize.y * oneBlockSize,
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: block.color,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Center(child: Text(getBlockName()))),
+          child: Center(
+              child: Text(
+            taskTitle,
+            style: TextStyle(
+              fontSize: titleFontSize,
+              color: Colors.black,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: titleMaxLine(),
+          ))),
     );
   }
 }

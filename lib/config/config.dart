@@ -1,1 +1,1 @@
-double oneBlockSize = 50.0;
+double oneBlockSize = 70.0;
