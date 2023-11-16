@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
 }
 
 Block nextBlock = BlockType.block1x1.block;
-Bucket bucket = Bucket(color: Colors.grey, bucketSize: BucketSize(8, 10));
+Bucket bucket = Bucket(color: Colors.grey, bucketSize: BucketSize(5, 10));
 
 class _MainPageState extends State<MainPage> {
   TextEditingController _textController = TextEditingController();
@@ -133,7 +133,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
           Container(
-              width: 200,
+              width: 250,
               color: Colors.green[200],
               child: Row(
                 children: [
@@ -152,6 +152,12 @@ class _MainPageState extends State<MainPage> {
                       },
                       child:
                           const Text('Task', style: TextStyle(fontSize: 20))),
+                  ElevatedButton(
+                      onPressed: () {
+                        bucket.getMaxPosition();
+                      },
+                      child:
+                          const Text('test', style: TextStyle(fontSize: 20))),
                 ],
               )),
         ],
