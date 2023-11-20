@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tumitas/animations/scale_up_animation.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
@@ -17,23 +18,20 @@ class MainPage extends StatefulWidget {
 Block nextBlock = BlockType.block1x1.block;
 Bucket bucket = Bucket(color: Colors.grey, bucketSize: BucketSize(5, 10));
 
-class _MainPageState extends State<MainPage> {
-  TextEditingController _textController = TextEditingController();
-  String taskTitle = '';
-  double nextBlockPosition = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class _MainPageState extends State<MainPage>
+    with SingleTickerProviderStateMixin {
+  final TextEditingController _textController = TextEditingController();
+  String temporaryBlockTitle = '';
+  double nextBlockPosition = 0.0;
+  double blockCoodinateX = 0.0;
+  BlockType? selectedBlockType;
+  bool isShowNextBlock = true;
 
   @override
   void dispose() {
     _textController.dispose();
     super.dispose();
   }
-
-  BlockType? selectedBlockType;
 
   void _onBlockTypeSelected(BlockType? type) {
     setState(() {
@@ -46,7 +44,32 @@ class _MainPageState extends State<MainPage> {
 
   void _handleSubmitted(String newTitle) {
     setState(() {
-      taskTitle = newTitle;
+      nextBlock.title = newTitle;
+    });
+  }
+
+  void _setBlockPosition() {
+    setState(() {
+      blockCoodinateX =
+          ((blockCoodinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
+      if (blockCoodinateX >
+          bucket.bucketSize.x * oneBlockSize -
+              nextBlock.blockSize.x * oneBlockSize) {
+        blockCoodinateX = bucket.bucketSize.x * oneBlockSize -
+            nextBlock.blockSize.x * oneBlockSize;
+      }
+    });
+  }
+
+  void onSwipeDown() {
+    print('swipe down');
+  }
+
+  void newBlockSet() {
+    setState(() {
+      nextBlock = BlockType.block1x1.block;
+      blockCoodinateX = 0.0;
+      debugPrint('new block set');
     });
   }
 
@@ -73,52 +96,70 @@ class _MainPageState extends State<MainPage> {
                                     left: 5.0, bottom: 20.0),
                                 child: Stack(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: bucket.bucketSize.x *
-                                              oneBlockSize,
-                                          height: nextBlock.blockSize.y *
-                                              oneBlockSize,
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: bucket.bucketSize.x +
-                                                (1 - nextBlock.blockSize.x),
-                                            itemBuilder: (context, index) {
-                                              return DragTarget(
-                                                onAccept: (data) {
-                                                  setState(() {
-                                                    nextBlockPosition =
-                                                        index * oneBlockSize;
-                                                  });
-                                                },
-                                                builder: (context,
-                                                        candidateData,
-                                                        rejectedData) =>
-                                                    Container(
-                                                  width: oneBlockSize,
-                                                  height:
-                                                      nextBlock.blockSize.y *
-                                                          oneBlockSize,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                    // dummy block
+                                    isShowNextBlock
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                                left: blockCoodinateX),
+                                            child: BlockWidget(
+                                              nextBlock,
+                                            ))
+                                        : Container(),
+                                    // draggable block
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          left: nextBlockPosition),
+                                          left: blockCoodinateX),
                                       child: Draggable(
                                           data: 1,
+                                          onDragUpdate: (details) {
+                                            setState(
+                                              () {
+                                                blockCoodinateX +=
+                                                    details.delta.dx;
+                                                if (blockCoodinateX < 0) {
+                                                  blockCoodinateX = 0;
+                                                } else if (blockCoodinateX >
+                                                    bucket.bucketSize.x *
+                                                            oneBlockSize -
+                                                        nextBlock.blockSize.x *
+                                                            oneBlockSize) {
+                                                  blockCoodinateX = bucket
+                                                              .bucketSize.x *
+                                                          oneBlockSize -
+                                                      nextBlock.blockSize.x *
+                                                          oneBlockSize;
+                                                }
+                                              },
+                                            );
+                                          },
+                                          onDragEnd: (details) {
+                                            _setBlockPosition();
+                                          },
                                           axis: Axis.horizontal,
                                           childWhenDragging: Container(),
-                                          feedback: Material(
-                                              child: BlockWidget(nextBlock,
-                                                  taskTitle: taskTitle)),
-                                          child: BlockWidget(nextBlock,
-                                              taskTitle: taskTitle)),
+                                          feedback: Container(
+                                              color: Colors.transparent),
+                                          child: GestureDetector(
+                                              onVerticalDragUpdate: (details) {
+                                                if (details.delta.dy > 5 &&
+                                                    isShowNextBlock) {
+                                                  setState(() {
+                                                    isShowNextBlock = false;
+                                                  });
+                                                  onSwipeDown();
+                                                  bucket.addNewBlock(
+                                                      nextBlock,
+                                                      Position(
+                                                          blockCoodinateX ~/
+                                                              oneBlockSize,
+                                                          0));
+                                                }
+                                              },
+                                              child: isShowNextBlock
+                                                  ? BlockWidget(
+                                                      nextBlock,
+                                                    )
+                                                  : Container())),
                                     ),
                                   ],
                                 ),
@@ -135,7 +176,8 @@ class _MainPageState extends State<MainPage> {
           Container(
               width: 250,
               color: Colors.green[200],
-              child: Row(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   BlockTypeDropdownWidget(
                     onSelected: _onBlockTypeSelected,
@@ -145,7 +187,7 @@ class _MainPageState extends State<MainPage> {
                         showDialog(
                           context: context,
                           builder: (_) => TaskTitleDialog(
-                            TextEditingController(text: taskTitle),
+                            TextEditingController(text: nextBlock.title),
                             onSubmitted: _handleSubmitted,
                           ),
                         );
@@ -154,10 +196,16 @@ class _MainPageState extends State<MainPage> {
                           const Text('Task', style: TextStyle(fontSize: 20))),
                   ElevatedButton(
                       onPressed: () {
-                        bucket.getMaxPosition();
+                        // bucket.getMaxPosition();
                       },
                       child:
-                          const Text('test', style: TextStyle(fontSize: 20))),
+                          const Text('getP', style: TextStyle(fontSize: 20))),
+                  ElevatedButton(
+                      onPressed: () {
+                        newBlockSet();
+                      },
+                      child:
+                          const Text('newB', style: TextStyle(fontSize: 20))),
                 ],
               )),
         ],

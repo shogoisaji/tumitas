@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 class Block {
   Color color;
+  String title;
+  String description;
   final BlockSize blockSize;
   final BlockType blockType;
-  Block(this.color, this.blockSize, this.blockType);
+  Block(this.color, this.blockSize, this.blockType,
+      {this.title = '', this.description = ''});
 }
 
 class BlockSize {
