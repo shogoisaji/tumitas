@@ -11,41 +11,56 @@ class BucketWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     const double bucketThickness = 5;
 
-    return Container(
-      alignment: Alignment.bottomCenter,
-      width: bucket.bucketSize.x * oneBlockSize + bucketThickness * 2,
-      height: bucket.bucketSize.y * oneBlockSize + bucketThickness * 2,
-      padding: const EdgeInsets.only(bottom: bucketThickness),
-      decoration: BoxDecoration(
-        color: bucket.color,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(10 + bucketThickness),
-          bottomRight: Radius.circular(10 + bucketThickness),
+    return Column(
+      children: [
+        // next block area
+        Container(
+            width: bucket.bucketSize.x * oneBlockSize + bucketThickness * 2,
+            height: oneBlockSize * 2,
+            color: Colors.black12),
+        // spacer
+        SizedBox(
+          width: bucket.bucketSize.x * oneBlockSize + bucketThickness * 2,
+          height: 15,
         ),
-      ),
-      child: Container(
-        width: bucket.bucketSize.x * oneBlockSize,
-        height: bucket.bucketSize.y * oneBlockSize + bucketThickness * 2,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
+        Container(
+          alignment: Alignment.bottomCenter,
+          width: bucket.bucketSize.x * oneBlockSize + bucketThickness * 2,
+          height: bucket.bucketSize.y * oneBlockSize + bucketThickness * 2,
+          padding: const EdgeInsets.only(bottom: bucketThickness),
+          decoration: BoxDecoration(
+            color: bucket.color,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(10 + bucketThickness),
+              bottomRight: Radius.circular(10 + bucketThickness),
+            ),
           ),
-        ),
-        child: Stack(children: [
-          for (int i = 0; i < bucket.bucketIntoBlock.length; i++)
-            Positioned(
-              left: bucket.bucketIntoBlock[i]['position'].positionX *
-                  oneBlockSize,
-              bottom: bucket.bucketIntoBlock[i]['position'].positionY *
-                  oneBlockSize,
-              child: BlockWidget(
-                bucket.bucketIntoBlock[i]['block'],
+          child: Container(
+            width: bucket.bucketSize.x * oneBlockSize,
+            height: bucket.bucketSize.y * oneBlockSize + bucketThickness * 2,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
               ),
             ),
-        ]),
-      ),
+            child: Stack(children: [
+              // bucketIntoBlockをそれぞれbuket内に配置
+              for (int i = 0; i < bucket.bucketIntoBlock.length; i++)
+                Positioned(
+                  left: bucket.bucketIntoBlock[i]['position'].positionX *
+                      oneBlockSize,
+                  bottom: bucket.bucketIntoBlock[i]['position'].positionY *
+                      oneBlockSize,
+                  child: BlockWidget(
+                    bucket.bucketIntoBlock[i]['block'],
+                  ),
+                ),
+            ]),
+          ),
+        ),
+      ],
     );
   }
 }

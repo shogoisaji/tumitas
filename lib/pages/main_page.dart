@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/animations/scale_up_animation.dart';
 import 'package:tumitas/animations/shake_animation.dart';
+import 'package:tumitas/animations/swipe_down_animation.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
@@ -23,15 +24,16 @@ Block nextBlock = Block(
 );
 Bucket bucket = Bucket(color: Colors.grey, bucketSize: BucketSize(5, 6));
 
-class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin {
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
   late AnimationController _shakeAnimationController;
+  late AnimationController _swipeDownAnimationController;
   String nextBlockTitle = '';
   double nextBlockPosition = 0.0;
   double blockCoodinateX = 0.0;
   BlockType? selectedBlockType;
   bool isShowNextBlock = true;
+  bool isShowSwipeDownAnimation = false;
 
   @override
   void initState() {
@@ -40,12 +42,17 @@ class _MainPageState extends State<MainPage>
       vsync: this,
       duration: const Duration(milliseconds: 100),
     );
+    _swipeDownAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
   }
 
   @override
   void dispose() {
     _textController.dispose();
     _shakeAnimationController.dispose();
+    _swipeDownAnimationController.dispose();
     super.dispose();
   }
 
@@ -101,6 +108,15 @@ class _MainPageState extends State<MainPage>
       });
       return;
     }
+    setState(() {
+      isShowSwipeDownAnimation = true;
+    });
+    _swipeDownAnimationController.forward();
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        isShowSwipeDownAnimation = false;
+      });
+    });
     _generateNewBlock();
     isShowNextBlock = false;
     debugPrint('swipe down');
@@ -117,24 +133,24 @@ class _MainPageState extends State<MainPage>
               children: [
                 Expanded(
                   child: Container(
+                    alignment: Alignment.bottomLeft,
                     color: Colors.red[200],
-                    child: Stack(children: [
-                      Positioned(
-                          bottom: 20,
-                          left: 20,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5.0, bottom: 20.0),
-                                child: Stack(
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Stack(
+                              children: [
+                                BucketWidget(bucket),
+                                Stack(
                                   children: [
+                                    // swipe down animation block
+
                                     // show block
                                     isShowNextBlock
                                         ? Padding(
                                             padding: EdgeInsets.only(
-                                                left: blockCoodinateX),
+                                                left: blockCoodinateX + 10),
                                             child: ShakeAnimation(
                                               animationController:
                                                   _shakeAnimationController,
@@ -146,7 +162,7 @@ class _MainPageState extends State<MainPage>
                                     // draggable block
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          left: blockCoodinateX),
+                                          left: blockCoodinateX + 10),
                                       child: Draggable(
                                           data: 1,
                                           onDragUpdate: (details) {
@@ -191,13 +207,30 @@ class _MainPageState extends State<MainPage>
                                                     )
                                                   : Container())),
                                     ),
+                                    Positioned(
+                                      top: 0,
+                                      left: 5,
+                                      child: isShowSwipeDownAnimation
+                                          ? SwipeDownAnimation(
+                                              downDistance: 100,
+                                              animationController:
+                                                  _swipeDownAnimationController,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: blockCoodinateX),
+                                                child: BlockWidget(
+                                                  nextBlock,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
+                                    )
                                   ],
                                 ),
-                              ),
-                              BucketWidget(bucket),
-                            ],
-                          ))
-                    ]),
+                              ],
+                            ),
+                          ],
+                        )),
                   ),
                 ),
               ],

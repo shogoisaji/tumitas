@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 
-class ShakeAnimation extends StatefulWidget {
+class SwipeDownAnimation extends StatefulWidget {
   final Widget child;
+  final double downDistance;
   final AnimationController animationController;
-  const ShakeAnimation({
+  const SwipeDownAnimation({
     super.key,
     required this.child,
     required this.animationController,
+    required this.downDistance,
   });
 
   @override
-  State<ShakeAnimation> createState() => _ShakeAnimationState();
+  State<SwipeDownAnimation> createState() => _SwipeDownAnimationState();
 }
 
-class _ShakeAnimationState extends State<ShakeAnimation> {
+class _SwipeDownAnimationState extends State<SwipeDownAnimation> {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
         animation: widget.animationController,
         builder: (context, child) => Transform.translate(
-              offset: Offset(widget.animationController.value * 12 - 6, 0),
+              offset: Offset(
+                  0, widget.animationController.value * widget.downDistance),
               child: widget.child,
             ));
   }
