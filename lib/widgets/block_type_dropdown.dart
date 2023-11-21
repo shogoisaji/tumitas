@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:tumitas/models/block.dart';
 
 class BlockTypeDropdownWidget extends StatefulWidget {
+  final BlockType initValue;
   final Function(BlockType?) onSelected;
   const BlockTypeDropdownWidget({
     super.key,
+    required this.initValue,
     required this.onSelected,
   });
 
@@ -14,7 +16,13 @@ class BlockTypeDropdownWidget extends StatefulWidget {
 }
 
 class _WordsCountDropdownWidgetState extends State<BlockTypeDropdownWidget> {
-  BlockType selectedType = BlockType.block1x1;
+  late BlockType selectedType;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedType = widget.initValue;
+  }
 
   @override
   Widget build(BuildContext context) {

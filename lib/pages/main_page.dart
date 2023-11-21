@@ -33,22 +33,31 @@ class _MainPageState extends State<MainPage>
     super.dispose();
   }
 
-  void _onBlockTypeSelected(BlockType? type) {
+  void _generateNewBlock() {
+    setState(() {
+      isShowNextBlock = true;
+      blockCoodinateX = 0.0;
+      selectedBlockType != null
+          ? selectedBlockType!.block
+          : BlockType.block1x1.block;
+    });
+  }
+
+  void _blockTypeSelect(BlockType? type) {
     setState(() {
       selectedBlockType = type;
-      if (type != null) {
-        nextBlock = type.block;
-      }
     });
+    _generateNewBlock();
   }
 
   void _handleSubmitted(String newTitle) {
     setState(() {
-      nextBlock.title = newTitle;
+      temporaryBlockTitle = newTitle;
+      // nextBlock.title = newTitle;
     });
   }
 
-  void _setBlockPosition() {
+  void _setNextBlockPosition() {
     setState(() {
       blockCoodinateX =
           ((blockCoodinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
@@ -61,14 +70,17 @@ class _MainPageState extends State<MainPage>
     });
   }
 
-  void onSwipeDown() {
-    print('swipe down');
+  void _onSwipeDown() {
+    bucket.addNewBlock(nextBlock, blockCoodinateX ~/ oneBlockSize);
+    debugPrint('swipe down');
   }
 
-  void newBlockSet() {
+  void _newBlockSet() {
     setState(() {
-      nextBlock = BlockType.block1x1.block;
+      selectedBlockType = BlockType.block1x1;
+      isShowNextBlock = true;
       blockCoodinateX = 0.0;
+      nextBlock = BlockType.block1x1.block;
       debugPrint('new block set');
     });
   }
@@ -133,7 +145,7 @@ class _MainPageState extends State<MainPage>
                                             );
                                           },
                                           onDragEnd: (details) {
-                                            _setBlockPosition();
+                                            _setNextBlockPosition();
                                           },
                                           axis: Axis.horizontal,
                                           childWhenDragging: Container(),
@@ -146,13 +158,7 @@ class _MainPageState extends State<MainPage>
                                                   setState(() {
                                                     isShowNextBlock = false;
                                                   });
-                                                  onSwipeDown();
-                                                  bucket.addNewBlock(
-                                                      nextBlock,
-                                                      Position(
-                                                          blockCoodinateX ~/
-                                                              oneBlockSize,
-                                                          0));
+                                                  _onSwipeDown();
                                                 }
                                               },
                                               child: isShowNextBlock
@@ -180,7 +186,8 @@ class _MainPageState extends State<MainPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   BlockTypeDropdownWidget(
-                    onSelected: _onBlockTypeSelected,
+                    initValue: selectedBlockType ?? BlockType.block1x1,
+                    onSelected: _blockTypeSelect,
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -202,7 +209,7 @@ class _MainPageState extends State<MainPage>
                           const Text('getP', style: TextStyle(fontSize: 20))),
                   ElevatedButton(
                       onPressed: () {
-                        newBlockSet();
+                        _generateNewBlock();
                       },
                       child:
                           const Text('newB', style: TextStyle(fontSize: 20))),

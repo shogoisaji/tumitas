@@ -59,42 +59,43 @@ class Bucket {
     ];
   }
 
-  void addNewBlock(Block newBlock, Position newPosition) {
-    bucketIntoBlock.add({'block': newBlock, 'position': newPosition});
-    debugPrint(
-        'add new bucket: ${newBlock.title} : ${newPosition.positionX}, ${newPosition.positionY}');
+  List<Position> dismantleBlockPosition(Block block, Position position) {
+    List<Position> dismantlePosition = [];
+    block.blockSize.x;
+    block.blockSize.y;
+    for (int i = 0; i < block.blockSize.x; i++) {
+      for (int j = 0; j < block.blockSize.y; j++) {
+        dismantlePosition
+            .add(Position(position.positionX + i, position.positionY + j));
+      }
+    }
+    return dismantlePosition;
   }
 
-  // List<Position> getExistPosition() {
-  //   List<Position> existPosition = [];
-  //   for (int i = 0; i < bucketIntoBlock.length; i++) {
-  //     final int positionCount = bucketIntoBlock[i]['block'].blockSize.x *
-  //         bucketIntoBlock[i]['block'].blockSize.y;
-  //     for (int j = 0; j < positionCount; j++) {
-  //       final Position addPosition = Position(
-  //           bucketIntoBlock[i]['position'].positionX +
-  //               j % bucketIntoBlock[i]['block'].blockSize.x,
-  //           bucketIntoBlock[i]['position'].positionY +
-  //               j ~/ bucketIntoBlock[i]['block'].blockSize.x);
-  //       existPosition.add(addPosition);
-  //     }
-  //   }
-  //   return existPosition;
-  // }
+  int getMaxPositionY(Block block, int selectPositionX) {
+    List<Position> existPosition = [];
+    int maxPositionY = 0;
 
-  // void getMaxPosition() {
-  //   List<Position> existPosition = getExistPosition();
-  //   for (int a = 0; a < bucketSize.x; a++) {
-  //     print(existPosition.length);
-  //     for (int b = 0; b < existPosition.length; b++) {
-  //       if (bucketMaxPosition[a] > existPosition[b].positionY &&
-  //           existPosition[b].positionX == a) {
-  //         bucketMaxPosition[a] = existPosition[b].positionY;
-  //       }
-  //     }
-  //   }
-  //   debugPrint(bucketMaxPosition.toString());
-  // }
+    for (int i = 0; i < bucketIntoBlock.length; i++) {
+      existPosition.addAll(dismantleBlockPosition(
+          bucketIntoBlock[i]['block'], bucketIntoBlock[i]['position']));
+    }
+    for (int w = 0; w < block.blockSize.x; w++) {
+      for (int l = 0; l < existPosition.length; l++) {
+        if (existPosition[l].positionX == selectPositionX + w &&
+            existPosition[l].positionY > maxPositionY) {
+          maxPositionY = existPosition[l].positionY;
+        }
+      }
+    }
+    return maxPositionY;
+  }
+
+  void addNewBlock(Block newBlock, int newPositionX) {
+    final maxPositionY = getMaxPositionY(newBlock, newPositionX);
+    final newPosition = Position(newPositionX, maxPositionY + 1);
+    bucketIntoBlock.add({'block': newBlock, 'position': newPosition});
+  }
 }
 
 class Position {
