@@ -22,38 +22,31 @@ class Bucket {
   void mocIntoBucket() {
     bucketIntoBlock = [
       {
-        'block': Block(Colors.red, BlockSize(1, 1), BlockType.block1x1,
-            title: 'sample1'),
+        'block': Block(Colors.red, BlockSize(1, 1), title: 'sample1'),
         'position': Position(0, 0)
       },
       {
-        'block': Block(Colors.blue, BlockSize(2, 1), BlockType.block2x1,
-            title: 'sample2'),
+        'block': Block(Colors.blue, BlockSize(2, 1), title: 'sample2'),
         'position': Position(1, 1)
       },
       {
-        'block': Block(Colors.green, BlockSize(2, 2), BlockType.block2x2,
-            title: 'sample3'),
+        'block': Block(Colors.green, BlockSize(2, 2), title: 'sample3'),
         'position': Position(2, 2)
       },
       {
-        'block': Block(Colors.orange, BlockSize(2, 1), BlockType.block2x2,
-            title: 'sample4'),
+        'block': Block(Colors.orange, BlockSize(2, 1), title: 'sample4'),
         'position': Position(0, 2)
       },
       {
-        'block': Block(Colors.grey, BlockSize(2, 1), BlockType.block2x2,
-            title: 'sample5'),
+        'block': Block(Colors.grey, BlockSize(2, 1), title: 'sample5'),
         'position': Position(3, 4)
       },
       {
-        'block': Block(Colors.teal, BlockSize(1, 1), BlockType.block2x2,
-            title: 'sample6'),
+        'block': Block(Colors.teal, BlockSize(1, 1), title: 'sample6'),
         'position': Position(4, 0)
       },
       {
-        'block': Block(Colors.black26, BlockSize(2, 1), BlockType.block2x2,
-            title: 'sample7'),
+        'block': Block(Colors.black26, BlockSize(2, 1), title: 'sample7'),
         'position': Position(2, 0)
       },
     ];
@@ -91,10 +84,15 @@ class Bucket {
     return maxPositionY;
   }
 
-  void addNewBlock(Block newBlock, int newPositionX) {
+  bool addNewBlock(Block newBlock, int newPositionX) {
     final maxPositionY = getMaxPositionY(newBlock, newPositionX);
+    if (maxPositionY + newBlock.blockSize.y > bucketSize.y - 1) {
+      return false;
+    }
     final newPosition = Position(newPositionX, maxPositionY + 1);
+
     bucketIntoBlock.add({'block': newBlock, 'position': newPosition});
+    return true;
   }
 }
 

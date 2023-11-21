@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/animations/scale_up_animation.dart';
+import 'package:tumitas/animations/shake_animation.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
@@ -15,21 +16,36 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-Block nextBlock = BlockType.block1x1.block;
-Bucket bucket = Bucket(color: Colors.grey, bucketSize: BucketSize(5, 10));
+Block nextBlock = Block(
+  Colors.red,
+  BlockSize(1, 1),
+  // title: 'sample1',
+);
+Bucket bucket = Bucket(color: Colors.grey, bucketSize: BucketSize(5, 6));
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
-  String temporaryBlockTitle = '';
+  late AnimationController _shakeAnimationController;
+  String nextBlockTitle = '';
   double nextBlockPosition = 0.0;
   double blockCoodinateX = 0.0;
   BlockType? selectedBlockType;
   bool isShowNextBlock = true;
 
   @override
+  void initState() {
+    super.initState();
+    _shakeAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+    );
+  }
+
+  @override
   void dispose() {
     _textController.dispose();
+    _shakeAnimationController.dispose();
     super.dispose();
   }
 
@@ -37,9 +53,14 @@ class _MainPageState extends State<MainPage>
     setState(() {
       isShowNextBlock = true;
       blockCoodinateX = 0.0;
-      selectedBlockType != null
-          ? selectedBlockType!.block
-          : BlockType.block1x1.block;
+      final blockSize = selectedBlockType != null
+          ? selectedBlockType!.blockSize
+          : BlockSize(1, 1);
+      nextBlock = Block(
+        Colors.red,
+        blockSize,
+        title: nextBlockTitle,
+      );
     });
   }
 
@@ -52,9 +73,9 @@ class _MainPageState extends State<MainPage>
 
   void _handleSubmitted(String newTitle) {
     setState(() {
-      temporaryBlockTitle = newTitle;
-      // nextBlock.title = newTitle;
+      nextBlockTitle = newTitle;
     });
+    _generateNewBlock();
   }
 
   void _setNextBlockPosition() {
@@ -71,18 +92,19 @@ class _MainPageState extends State<MainPage>
   }
 
   void _onSwipeDown() {
-    bucket.addNewBlock(nextBlock, blockCoodinateX ~/ oneBlockSize);
+    final addAvailable =
+        bucket.addNewBlock(nextBlock, blockCoodinateX ~/ oneBlockSize);
+    if (!addAvailable) {
+      _shakeAnimationController.repeat();
+      Future.delayed(const Duration(milliseconds: 600), () {
+        _shakeAnimationController.stop();
+      });
+      return;
+    }
+    _generateNewBlock();
+    isShowNextBlock = false;
     debugPrint('swipe down');
-  }
-
-  void _newBlockSet() {
-    setState(() {
-      selectedBlockType = BlockType.block1x1;
-      isShowNextBlock = true;
-      blockCoodinateX = 0.0;
-      nextBlock = BlockType.block1x1.block;
-      debugPrint('new block set');
-    });
+    nextBlockTitle = '';
   }
 
   @override
@@ -108,13 +130,17 @@ class _MainPageState extends State<MainPage>
                                     left: 5.0, bottom: 20.0),
                                 child: Stack(
                                   children: [
-                                    // dummy block
+                                    // show block
                                     isShowNextBlock
                                         ? Padding(
                                             padding: EdgeInsets.only(
                                                 left: blockCoodinateX),
-                                            child: BlockWidget(
-                                              nextBlock,
+                                            child: ShakeAnimation(
+                                              animationController:
+                                                  _shakeAnimationController,
+                                              child: BlockWidget(
+                                                nextBlock,
+                                              ),
                                             ))
                                         : Container(),
                                     // draggable block
@@ -155,9 +181,7 @@ class _MainPageState extends State<MainPage>
                                               onVerticalDragUpdate: (details) {
                                                 if (details.delta.dy > 5 &&
                                                     isShowNextBlock) {
-                                                  setState(() {
-                                                    isShowNextBlock = false;
-                                                  });
+                                                  setState(() {});
                                                   _onSwipeDown();
                                                 }
                                               },
