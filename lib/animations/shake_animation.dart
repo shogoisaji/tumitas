@@ -19,7 +19,9 @@ class _ShakeAnimationState extends State<ShakeAnimation> {
     return AnimatedBuilder(
         animation: widget.animationController,
         builder: (context, child) => Transform.translate(
-              offset: Offset(widget.animationController.value * 12 - 6, 0),
+              offset: widget.animationController.value != 0
+                  ? Offset(widget.animationController.value * 5 - 10, 0)
+                  : Offset.zero,
               child: widget.child,
             ));
   }

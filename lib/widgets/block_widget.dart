@@ -13,12 +13,12 @@ class BlockWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int titleMaxLine() {
-      return block.blockSize.y * 2;
+      return block.blockType.blockSize.y * 2;
     }
 
     return Container(
-        width: block.blockSize.x * oneBlockSize,
-        height: block.blockSize.y * oneBlockSize,
+        width: block.blockType.blockSize.x * oneBlockSize,
+        height: block.blockType.blockSize.y * oneBlockSize,
         padding: const EdgeInsets.all(1.5),
         child: Container(
           padding: const EdgeInsets.all(4),

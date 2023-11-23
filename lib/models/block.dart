@@ -4,13 +4,14 @@ class Block {
   final Color color;
   final String title;
   final String description;
-  final BlockSize blockSize;
-  // final BlockType blockType;
-  Block(this.color, this.blockSize,
-      //  this.blockType,
-
-      {this.title = '',
-      this.description = ''});
+  // final BlockSize blockSize;
+  final BlockType blockType;
+  Block(
+    this.color,
+    this.blockType,
+    this.title,
+    this.description,
+  );
 }
 
 class BlockSize {

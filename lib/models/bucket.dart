@@ -3,63 +3,37 @@ import 'package:tumitas/models/block.dart';
 
 class Bucket {
   final Color color;
-  final BucketSize bucketSize;
-  List<Map<String, dynamic>>
-      bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
-  List<int> bucketMaxPosition;
+  final BucketSizeCells bucketSizeCells;
+  final String bucketTitle;
+  final List<Map<String, dynamic>> bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
+  final List<int> bucketMaxPosition;
 
   Bucket({
+    required this.bucketTitle,
     required this.color,
-    required this.bucketSize,
-    List<Map<String, dynamic>> bucketIntoBlock = const [],
-    List<int> bucketMaxPosition = const [],
-  })  : this.bucketIntoBlock = bucketIntoBlock,
-        this.bucketMaxPosition = bucketMaxPosition {
-    mocIntoBucket();
-  }
+    required this.bucketSizeCells,
+    required this.bucketIntoBlock,
+    required this.bucketMaxPosition,
+  });
 
 // moc
-  void mocIntoBucket() {
-    bucketIntoBlock = [
-      {
-        'block': Block(Colors.red, BlockSize(1, 1), title: 'sample1'),
-        'position': Position(0, 0)
-      },
-      {
-        'block': Block(Colors.blue, BlockSize(2, 1), title: 'sample2'),
-        'position': Position(1, 1)
-      },
-      {
-        'block': Block(Colors.green, BlockSize(2, 2), title: 'sample3'),
-        'position': Position(2, 2)
-      },
-      {
-        'block': Block(Colors.orange, BlockSize(2, 1), title: 'sample4'),
-        'position': Position(0, 2)
-      },
-      {
-        'block': Block(Colors.grey, BlockSize(2, 1), title: 'sample5'),
-        'position': Position(3, 4)
-      },
-      {
-        'block': Block(Colors.teal, BlockSize(1, 1), title: 'sample6'),
-        'position': Position(4, 0)
-      },
-      {
-        'block': Block(Colors.black26, BlockSize(2, 1), title: 'sample7'),
-        'position': Position(2, 0)
-      },
-    ];
-  }
+  final List<Map<String, dynamic>> mocBucketIntoBlock = [
+    {'block': Block(Colors.red, BlockType.block1x1, 'sample1', 'description'), 'position': Position(0, 0)},
+    {'block': Block(Colors.blue, BlockType.block2x1, 'sample2', 'description'), 'position': Position(1, 1)},
+    {'block': Block(Colors.green, BlockType.block2x2, 'sample3', 'description'), 'position': Position(2, 2)},
+    {'block': Block(Colors.orange, BlockType.block2x2, 'sample4', 'description'), 'position': Position(0, 2)},
+    {'block': Block(Colors.grey, BlockType.block2x1, 'sample5', 'description'), 'position': Position(3, 4)},
+    {'block': Block(Colors.teal, BlockType.block1x1, 'sample6', 'description'), 'position': Position(4, 0)},
+    {'block': Block(Colors.black26, BlockType.block2x1, 'sample7', 'description'), 'position': Position(2, 0)},
+  ];
 
-  List<Position> dismantleBlockPosition(Block block, Position position) {
+  List<Position> fragmentBlockPosition(Block block, Position position) {
     List<Position> dismantlePosition = [];
-    block.blockSize.x;
-    block.blockSize.y;
-    for (int i = 0; i < block.blockSize.x; i++) {
-      for (int j = 0; j < block.blockSize.y; j++) {
-        dismantlePosition
-            .add(Position(position.positionX + i, position.positionY + j));
+    block.blockType.blockSize.x;
+    block.blockType.blockSize.y;
+    for (int i = 0; i < block.blockType.blockSize.x; i++) {
+      for (int j = 0; j < block.blockType.blockSize.y; j++) {
+        dismantlePosition.add(Position(position.positionX + i, position.positionY + j));
       }
     }
     return dismantlePosition;
@@ -67,16 +41,14 @@ class Bucket {
 
   int getMaxPositionY(Block block, int selectPositionX) {
     List<Position> existPosition = [];
-    int maxPositionY = 0;
+    int maxPositionY = -1;
 
     for (int i = 0; i < bucketIntoBlock.length; i++) {
-      existPosition.addAll(dismantleBlockPosition(
-          bucketIntoBlock[i]['block'], bucketIntoBlock[i]['position']));
+      existPosition.addAll(fragmentBlockPosition(bucketIntoBlock[i]['block'], bucketIntoBlock[i]['position']));
     }
-    for (int w = 0; w < block.blockSize.x; w++) {
+    for (int w = 0; w < block.blockType.blockSize.x; w++) {
       for (int l = 0; l < existPosition.length; l++) {
-        if (existPosition[l].positionX == selectPositionX + w &&
-            existPosition[l].positionY > maxPositionY) {
+        if (existPosition[l].positionX == selectPositionX + w && existPosition[l].positionY > maxPositionY) {
           maxPositionY = existPosition[l].positionY;
         }
       }
@@ -86,7 +58,7 @@ class Bucket {
 
   bool addNewBlock(Block newBlock, int newPositionX) {
     final maxPositionY = getMaxPositionY(newBlock, newPositionX);
-    if (maxPositionY + newBlock.blockSize.y > bucketSize.y - 1) {
+    if (maxPositionY + newBlock.blockType.blockSize.y > bucketSizeCells.y - 1) {
       return false;
     }
     final newPosition = Position(newPositionX, maxPositionY + 1);
@@ -103,8 +75,8 @@ class Position {
   Position(this.positionX, this.positionY);
 }
 
-class BucketSize {
+class BucketSizeCells {
   final int x;
   final int y;
-  BucketSize(this.x, this.y);
+  BucketSizeCells(this.x, this.y);
 }

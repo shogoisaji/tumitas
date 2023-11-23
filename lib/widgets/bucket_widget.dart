@@ -13,21 +13,12 @@ class BucketWidget extends StatelessWidget {
 
     return Column(
       children: [
-        // next block area
-        Container(
-            width: bucket.bucketSize.x * oneBlockSize + bucketThickness * 2,
-            height: oneBlockSize * 2,
-            color: Colors.black12),
-        // spacer
-        SizedBox(
-          width: bucket.bucketSize.x * oneBlockSize + bucketThickness * 2,
-          height: 15,
-        ),
         Container(
           alignment: Alignment.bottomCenter,
-          width: bucket.bucketSize.x * oneBlockSize + bucketThickness * 2,
-          height: bucket.bucketSize.y * oneBlockSize + bucketThickness * 2,
+          width: bucket.bucketSizeCells.x * oneBlockSize + bucketThickness * 2,
+          height: bucket.bucketSizeCells.y * oneBlockSize + bucketThickness * 2,
           padding: const EdgeInsets.only(bottom: bucketThickness),
+          margin: const EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
             color: bucket.color,
             borderRadius: const BorderRadius.only(
@@ -36,8 +27,8 @@ class BucketWidget extends StatelessWidget {
             ),
           ),
           child: Container(
-            width: bucket.bucketSize.x * oneBlockSize,
-            height: bucket.bucketSize.y * oneBlockSize + bucketThickness * 2,
+            width: bucket.bucketSizeCells.x * oneBlockSize,
+            height: bucket.bucketSizeCells.y * oneBlockSize + bucketThickness * 2,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -46,19 +37,21 @@ class BucketWidget extends StatelessWidget {
               ),
             ),
             child: Stack(children: [
-              // bucketIntoBlockをそれぞれbuket内に配置
+              // bucketIntoBlockをそれぞれbucket内に配置
               for (int i = 0; i < bucket.bucketIntoBlock.length; i++)
                 Positioned(
-                  left: bucket.bucketIntoBlock[i]['position'].positionX *
-                      oneBlockSize,
-                  bottom: bucket.bucketIntoBlock[i]['position'].positionY *
-                      oneBlockSize,
+                  left: bucket.bucketIntoBlock[i]['position'].positionX * oneBlockSize,
+                  bottom: bucket.bucketIntoBlock[i]['position'].positionY * oneBlockSize,
                   child: BlockWidget(
                     bucket.bucketIntoBlock[i]['block'],
                   ),
                 ),
             ]),
           ),
+        ),
+        Text(
+          bucket.bucketTitle,
+          style: const TextStyle(fontSize: 20),
         ),
       ],
     );
