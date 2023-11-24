@@ -34,7 +34,6 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
 
   @override
   void initState() {
-    print('sub initState');
     super.initState();
     _shakeAnimationController = AnimationController(
       vsync: this,
@@ -51,7 +50,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
   @override
   void didUpdateWidget(PlaySpaceWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedBlockType != oldWidget.selectedBlockType) {
+    if (widget.selectedBlockType != oldWidget.selectedBlockType || widget.nextBlockTitle != oldWidget.nextBlockTitle) {
       _generateNewBlock();
     }
   }

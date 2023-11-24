@@ -10,16 +10,15 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          const Text('Settings'),
-          ElevatedButton(
-            onPressed: () {},
-            child: const Text('戻る'),
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('Settings'),
+        ElevatedButton(
+          onPressed: () {},
+          child: const Text('戻る'),
+        ),
+      ],
     );
   }
 }

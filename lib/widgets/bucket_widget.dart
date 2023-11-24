@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/bucket.dart';
+import 'package:tumitas/theme/theme.dart';
 import 'package:tumitas/widgets/block_widget.dart';
 
 class BucketWidget extends StatelessWidget {
@@ -30,7 +31,7 @@ class BucketWidget extends StatelessWidget {
             width: bucket.bucketSizeCells.x * oneBlockSize,
             height: bucket.bucketSizeCells.y * oneBlockSize + bucketThickness * 2,
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: MyTheme.grey2,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(10),
                 bottomRight: Radius.circular(10),

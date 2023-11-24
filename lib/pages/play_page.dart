@@ -1,12 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/widgets/block_type_dropdown.dart';
+import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
-import 'package:tumitas/widgets/task_title_dialog.dart';
 
 class PlayPage extends StatefulWidget {
   const PlayPage({super.key});
@@ -24,14 +21,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   bool isShowNextBlock = true;
   bool isShowSwipeDownAnimation = false;
 
-  // final random = Random();
-
-  // Block nextBlock = Block(
-  //   blockColorList[Random().nextInt(blockColorList.length)],
-  //   BlockType.block1x1,
-  //   'Title',
-  //   'nextBlockDescription',
-  // );
   Bucket bucket = Bucket(
       bucketTitle: 'Bucket Title',
       color: Colors.grey,
@@ -61,49 +50,62 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            PlaySpaceWidget(
-              bucket: bucket,
-              selectedBlockType: selectedBlockType,
-              nextBlockTitle: nextBlockTitle,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  PlaySpaceWidget(
+                    bucket: bucket,
+                    selectedBlockType: selectedBlockType,
+                    nextBlockTitle: nextBlockTitle,
+                  ),
+                  Container(
+                      width: 250,
+                      color: Colors.green[200],
+                      child: Column(
+                        children: [
+                          BlockTypeDropdownWidget(
+                            initValue: selectedBlockType,
+                            onSelected: _blockTypeSelect,
+                          ),
+                          // ElevatedButton(
+                          //     onPressed: () {
+                          //       showDialog(
+                          //         context: context,
+                          //         builder: (_) => TaskTitleDialog(
+                          //           TextEditingController(text: nextBlockTitle),
+                          //           onSubmitted: _handleSubmitted,
+                          //         ),
+                          //       );
+                          //     },
+                          //     child: const Text('Task', style: TextStyle(fontSize: 20))),
+                          ElevatedButton(
+                              onPressed: () {
+                                // bucket.getMaxPosition();
+                              },
+                              child: const Text('getP', style: TextStyle(fontSize: 20))),
+                          ElevatedButton(
+                              onPressed: () {
+                                _blockTypeSelect(BlockType.block2x2);
+                              },
+                              child: const Text('newB', style: TextStyle(fontSize: 20))),
+                        ],
+                      )),
+                ],
+              ),
             ),
-            Container(
-                width: 250,
-                color: Colors.green[200],
-                child: Column(
-                  children: [
-                    BlockTypeDropdownWidget(
-                      initValue: selectedBlockType,
-                      onSelected: _blockTypeSelect,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => TaskTitleDialog(
-                              TextEditingController(text: nextBlockTitle),
-                              onSubmitted: _handleSubmitted,
-                            ),
-                          );
-                        },
-                        child: const Text('Task', style: TextStyle(fontSize: 20))),
-                    ElevatedButton(
-                        onPressed: () {
-                          // bucket.getMaxPosition();
-                        },
-                        child: const Text('getP', style: TextStyle(fontSize: 20))),
-                    ElevatedButton(
-                        onPressed: () {
-                          _blockTypeSelect(BlockType.block2x2);
-                        },
-                        child: const Text('newB', style: TextStyle(fontSize: 20))),
-                  ],
-                )),
-          ],
-        ),
+          ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: MultiFloatingBottom(
+              onSubmittedText: _handleSubmitted,
+            ),
+          )
+        ],
       ),
     );
   }

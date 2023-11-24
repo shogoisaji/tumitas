@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/pages/play_page.dart';
 import 'package:tumitas/pages/settings_page.dart';
+import 'package:tumitas/theme/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.red[200],
+        // scaffoldBackgroundColor: Colors.red[200],
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
@@ -34,10 +35,39 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   final pageController = PageController();
   int currentIndex = 0;
 
+  List<Map<String, dynamic>> bottomNavigationBarItems = [
+    {
+      'icon': Icons.home,
+      'page': PlayPage(),
+    },
+    {
+      'icon': Icons.archive,
+      'page': const Center(
+        child: Text('Archive Page'),
+      ),
+    },
+    {
+      'icon': Icons.settings,
+      'page': SettingsPage(),
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
+          selectedFontSize: 0,
+          unselectedFontSize: 0,
+          iconSize: 32,
+          selectedIconTheme: const IconThemeData(shadows: [
+            Shadow(
+              color: Colors.white,
+              blurRadius: 20,
+            )
+          ]),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: MyTheme.green4,
+          backgroundColor: MyTheme.green1,
           currentIndex: currentIndex,
           onTap: (index) {
             setState(() {
@@ -45,17 +75,44 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
             });
           },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          items: [
+            ...bottomNavigationBarItems
+                .map((e) => BottomNavigationBarItem(
+                    icon: Column(
+                      children: [
+                        Icon(e['icon']),
+                        if (currentIndex == bottomNavigationBarItems.indexOf(e))
+                          Container(
+                            width: 20,
+                            height: 3,
+                            margin: const EdgeInsets.only(top: 4),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(3),
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
+                    label: ''))
+                .toList(),
           ],
         ),
-        body: PageView(
-          controller: pageController,
-          children: [
-            PlayPage(),
-            SettingsPage(),
-          ],
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [MyTheme.blue2, MyTheme.green5],
+            ),
+          ),
+          child: PageView(
+            controller: pageController,
+            children: [
+              ...bottomNavigationBarItems.map((e) => e['page']).toList(),
+            ],
+          ),
         ));
   }
 }
