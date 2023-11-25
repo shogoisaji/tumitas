@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/theme/theme.dart';
-import 'package:tumitas/widgets/task_title_dialog.dart';
+import 'package:tumitas/widgets/task_block_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
   final Function(String) onSubmittedText;
@@ -30,7 +30,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
         'onPressed': () {
           showDialog(
             context: context,
-            builder: (_) => TaskTitleDialog(
+            builder: (_) => TaskBlockDialog(
               TextEditingController(),
               onSubmitted: _handleSubmitted,
             ),
@@ -42,10 +42,10 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
         'onPressed': () {},
       },
       {
-        'icon': Icons.arrow_back,
+        'icon': Icons.menu_book,
         'onPressed': () {
           setState(() {
-            isPressed = !isPressed;
+            // isPressed = !isPressed;
           });
         },
       },

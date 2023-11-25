@@ -19,7 +19,7 @@ class BlockWidget extends StatelessWidget {
     return Container(
         width: block.blockType.blockSize.x * oneBlockSize,
         height: block.blockType.blockSize.y * oneBlockSize,
-        padding: const EdgeInsets.all(1.5),
+        padding: const EdgeInsets.all(2.0),
         child: Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
