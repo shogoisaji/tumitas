@@ -8,6 +8,7 @@ class MyTheme {
   static const Color green5 = Color(0xffc0ff9f);
   static const Color grey1 = Color(0xff7c9d9d);
   static const Color grey2 = Color(0xffc7e2eb);
+  static const Color grey3 = Color(0xffe5ffeb);
   static const Color blue1 = Color(0xff4040ff);
   static const Color blue2 = Color(0xff00a0d6);
   static const Color red = Color(0xffeb5c5c);
@@ -15,7 +16,7 @@ class MyTheme {
   // block color
   static const Color fieryRed = Color(0xffff4f4f);
   static const Color sunsetOrange = Color(0xffffb13b);
-  static const Color lemonYellow = Color(0xffd8ff3b);
+  static const Color lemonYellow = Color(0xffffff15);
   static const Color brightGreen = Color(0xff2eeb10);
   static const Color mintGreen = Color(0xff00ebb0);
   static const Color skyBlue = Color(0xff00ffff);

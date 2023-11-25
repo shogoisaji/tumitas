@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:tumitas/animations/shake_animation.dart';
 import 'package:tumitas/config/config.dart';
@@ -10,14 +8,14 @@ import 'package:tumitas/widgets/bucket_widget.dart';
 
 class PlaySpaceWidget extends StatefulWidget {
   final Bucket bucket;
-  final BlockType selectedBlockType;
   final String nextBlockTitle;
+  final Block? nextSettingBlock;
 
   const PlaySpaceWidget({
     Key? key,
     required this.bucket,
-    required this.selectedBlockType,
     required this.nextBlockTitle,
+    required this.nextSettingBlock,
   }) : super(key: key);
 
   @override
@@ -27,10 +25,9 @@ class PlaySpaceWidget extends StatefulWidget {
 class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderStateMixin {
   late AnimationController _shakeAnimationController;
   late AnimationController _swipeDownAnimationController;
-  late Block nextBlock;
   double blockCoordinateX = 0.0;
-  bool isShowNextBlock = false;
   bool isShowSwipeDownAnimation = false;
+  Block? nextBlock;
 
   @override
   void initState() {
@@ -43,15 +40,17 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
-    _generateNewBlock();
+    nextBlock = widget.nextSettingBlock;
   }
 
-// selectedBlockTypeの変更を監視
+// nextSettingBlockの変更を監視
   @override
   void didUpdateWidget(PlaySpaceWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedBlockType != oldWidget.selectedBlockType || widget.nextBlockTitle != oldWidget.nextBlockTitle) {
-      _generateNewBlock();
+    if (widget.nextSettingBlock != oldWidget.nextSettingBlock) {
+      setState(() {
+        nextBlock = widget.nextSettingBlock;
+      });
     }
   }
 
@@ -62,32 +61,21 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
     super.dispose();
   }
 
-  void _generateNewBlock() {
-    setState(() {
-      isShowNextBlock = true;
-      blockCoordinateX = 0.0;
-      nextBlock = Block(
-        blockColorList[Random().nextInt(blockColorList.length)],
-        widget.selectedBlockType,
-        widget.nextBlockTitle,
-        'nextBlockDescription',
-      );
-    });
-  }
-
   void _setNextBlockPosition() {
+    if (nextBlock == null) return;
     setState(() {
       blockCoordinateX = ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
       if (blockCoordinateX >
-          widget.bucket.bucketSizeCells.x * oneBlockSize - nextBlock.blockType.blockSize.x * oneBlockSize) {
+          widget.bucket.bucketSizeCells.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize) {
         blockCoordinateX =
-            widget.bucket.bucketSizeCells.x * oneBlockSize - nextBlock.blockType.blockSize.x * oneBlockSize;
+            widget.bucket.bucketSizeCells.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize;
       }
     });
   }
 
   void _onSwipeDown() {
-    final addAvailable = widget.bucket.addNewBlock(nextBlock, blockCoordinateX ~/ oneBlockSize);
+    if (nextBlock == null) return;
+    final addAvailable = widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
     if (!addAvailable) {
       _shakeAnimationController.repeat();
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -96,19 +84,10 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
       return;
     }
     setState(() {
-      isShowNextBlock = false;
-      isShowSwipeDownAnimation = true;
+      nextBlock = null;
     });
     _swipeDownAnimationController.forward();
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        isShowSwipeDownAnimation = false;
-        _generateNewBlock();
-      });
-    });
-    isShowNextBlock = false;
     debugPrint('swipe down');
-    // nextBlockTitle = '';
   }
 
   @override
@@ -120,18 +99,17 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
         Container(
           width: oneBlockSize * widget.bucket.bucketSizeCells.x,
           height: oneBlockSize * 2,
-          // color: Colors.black12, // 確認用
           margin: const EdgeInsets.only(bottom: 10),
           child: Stack(
             children: [
-              isShowNextBlock
+              nextBlock != null
                   ? Positioned(
                       bottom: 0,
                       left: blockCoordinateX,
                       child: ShakeAnimation(
                         animationController: _shakeAnimationController,
                         child: BlockWidget(
-                          nextBlock,
+                          nextBlock!,
                         ),
                       ))
                   : Container(),
@@ -141,6 +119,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                 child: Draggable(
                     data: 1,
                     onDragUpdate: (details) {
+                      if (nextBlock == null) return;
                       setState(
                         () {
                           blockCoordinateX += details.delta.dx;
@@ -148,9 +127,9 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                             blockCoordinateX = 0;
                           } else if (blockCoordinateX >
                               widget.bucket.bucketSizeCells.x * oneBlockSize -
-                                  nextBlock.blockType.blockSize.x * oneBlockSize) {
+                                  nextBlock!.blockType.blockSize.x * oneBlockSize) {
                             blockCoordinateX = widget.bucket.bucketSizeCells.x * oneBlockSize -
-                                nextBlock.blockType.blockSize.x * oneBlockSize;
+                                nextBlock!.blockType.blockSize.x * oneBlockSize;
                           }
                         },
                       );
@@ -163,15 +142,15 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                     feedback: Container(color: Colors.transparent),
                     child: GestureDetector(
                         onVerticalDragUpdate: (details) {
-                          if (details.delta.dy > 5 && isShowNextBlock) {
+                          if (details.delta.dy > 5) {
                             setState(() {});
                             _onSwipeDown();
                           }
                         },
-                        child: isShowNextBlock
+                        child: nextBlock != null
                             ? Container(
-                                width: nextBlock.blockType.blockSize.x * oneBlockSize,
-                                height: nextBlock.blockType.blockSize.y * oneBlockSize,
+                                width: nextBlock!.blockType.blockSize.x * oneBlockSize,
+                                height: nextBlock!.blockType.blockSize.y * oneBlockSize,
                                 color: Colors.transparent,
                               )
                             : Container())),

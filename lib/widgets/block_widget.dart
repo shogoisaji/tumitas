@@ -4,7 +4,7 @@ import 'package:tumitas/models/block.dart';
 
 class BlockWidget extends StatelessWidget {
   final Block block;
-  final double titleFontSize = 12;
+  final double titleFontSize = 14;
   const BlockWidget(
     this.block, {
     super.key,
@@ -30,7 +30,7 @@ class BlockWidget extends StatelessWidget {
                 color: Colors.white.withOpacity(0.2),
                 spreadRadius: 0.5,
                 blurRadius: 2,
-                offset: const Offset(0, 0), // changes position of shadow
+                offset: const Offset(0, 0),
               ),
             ],
           ),

@@ -11,11 +11,10 @@ class BlockTypeDropdownWidget extends StatefulWidget {
   });
 
   @override
-  _WordsCountDropdownWidgetState createState() =>
-      _WordsCountDropdownWidgetState();
+  State<BlockTypeDropdownWidget> createState() => _BlockTypeDropdownWidgetState();
 }
 
-class _WordsCountDropdownWidgetState extends State<BlockTypeDropdownWidget> {
+class _BlockTypeDropdownWidgetState extends State<BlockTypeDropdownWidget> {
   late BlockType selectedType;
 
   @override
@@ -34,8 +33,7 @@ class _WordsCountDropdownWidgetState extends State<BlockTypeDropdownWidget> {
         });
         widget.onSelected(newValue);
       },
-      items:
-          BlockType.values.map<DropdownMenuItem<BlockType>>((BlockType type) {
+      items: BlockType.values.map<DropdownMenuItem<BlockType>>((BlockType type) {
         return DropdownMenuItem<BlockType>(
           value: type,
           child: Center(child: Text(type.toString().split('block')[1])),

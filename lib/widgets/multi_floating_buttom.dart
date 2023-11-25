@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:tumitas/models/block.dart';
 import 'package:tumitas/theme/theme.dart';
 import 'package:tumitas/widgets/task_block_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
   final Function(String) onSubmittedText;
+  final Function(Block) onSetBlock;
 
-  const MultiFloatingBottom({super.key, required this.onSubmittedText});
+  const MultiFloatingBottom({super.key, required this.onSubmittedText, required this.onSetBlock});
 
   @override
   State<MultiFloatingBottom> createState() => _MultiFloatingBottomState();
@@ -22,6 +24,12 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
     });
   }
 
+  void _handleSetBlock(Block block) {
+    setState(() {
+      widget.onSetBlock(block);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> floatingButtonList = [
@@ -32,6 +40,11 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
             context: context,
             builder: (_) => TaskBlockDialog(
               TextEditingController(),
+              onSetting: (Block block) {
+                setState(() {
+                  _handleSetBlock(block);
+                });
+              },
               onSubmitted: _handleSubmitted,
             ),
           );
