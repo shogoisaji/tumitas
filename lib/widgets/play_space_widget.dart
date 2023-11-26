@@ -50,6 +50,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
     if (widget.nextSettingBlock != oldWidget.nextSettingBlock) {
       setState(() {
         nextBlock = widget.nextSettingBlock;
+        blockCoordinateX = 0.0;
       });
     }
   }

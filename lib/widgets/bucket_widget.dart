@@ -11,28 +11,30 @@ class BucketWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double bucketThickness = 5;
+    const double innerOffset = 1;
 
     return Column(
       children: [
         Container(
           alignment: Alignment.bottomCenter,
-          width: bucket.bucketSizeCells.x * oneBlockSize + bucketThickness * 2,
+          width: bucket.bucketSizeCells.x * oneBlockSize + bucketThickness * 2 + innerOffset * 2,
           height: bucket.bucketSizeCells.y * oneBlockSize + bucketThickness * 2,
           padding: const EdgeInsets.only(bottom: bucketThickness),
           margin: const EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
-            color: bucket.color,
+            color: bucket.bucketOuterColor,
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(10 + bucketThickness),
               bottomRight: Radius.circular(10 + bucketThickness),
             ),
           ),
           child: Container(
-            width: bucket.bucketSizeCells.x * oneBlockSize,
+            width: bucket.bucketSizeCells.x * oneBlockSize + innerOffset * 2,
             height: bucket.bucketSizeCells.y * oneBlockSize + bucketThickness * 2,
-            decoration: const BoxDecoration(
-              color: MyTheme.grey2,
-              borderRadius: BorderRadius.only(
+            padding: const EdgeInsets.only(left: innerOffset, right: innerOffset, bottom: innerOffset),
+            decoration: BoxDecoration(
+              color: bucket.bucketInnerColor,
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(10),
                 bottomRight: Radius.circular(10),
               ),
@@ -52,7 +54,7 @@ class BucketWidget extends StatelessWidget {
         ),
         Text(
           bucket.bucketTitle,
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: MyTheme.grey1),
         ),
       ],
     );

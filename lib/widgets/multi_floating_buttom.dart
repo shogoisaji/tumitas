@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/theme/theme.dart';
-import 'package:tumitas/widgets/task_block_dialog.dart';
+import 'package:tumitas/widgets/block_setting_dialog.dart';
+import 'package:tumitas/widgets/bucket_setting_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
   final Function(String) onSubmittedText;
@@ -38,7 +39,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
         'onPressed': () {
           showDialog(
             context: context,
-            builder: (_) => TaskBlockDialog(
+            builder: (_) => BlockSettingDialog(
               TextEditingController(),
               onSetting: (Block block) {
                 setState(() {
@@ -52,7 +53,20 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
       },
       {
         'icon': Icons.change_circle,
-        'onPressed': () {},
+        'onPressed': () {
+          showDialog(
+            context: context,
+            builder: (_) => BucketSettingDialog(
+              TextEditingController(),
+              onSetting: (Block block) {
+                setState(() {
+                  _handleSetBlock(block);
+                });
+              },
+              onSubmitted: _handleSubmitted,
+            ),
+          );
+        },
       },
       {
         'icon': Icons.menu_book,

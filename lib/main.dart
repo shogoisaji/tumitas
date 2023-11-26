@@ -59,12 +59,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           selectedFontSize: 0,
           unselectedFontSize: 0,
           iconSize: 32,
-          selectedIconTheme: const IconThemeData(shadows: [
-            Shadow(
-              color: Colors.white,
-              blurRadius: 20,
-            )
-          ]),
           selectedItemColor: Colors.white,
           unselectedItemColor: MyTheme.green4,
           backgroundColor: MyTheme.green1,
@@ -72,7 +66,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           onTap: (index) {
             setState(() {
               currentIndex = index;
-              pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+              pageController.animateToPage(index, duration: const Duration(milliseconds: 400), curve: Curves.ease);
             });
           },
           items: [
@@ -109,6 +103,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ),
           child: PageView(
             controller: pageController,
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               ...bottomNavigationBarItems.map((e) => e['page']).toList(),
             ],

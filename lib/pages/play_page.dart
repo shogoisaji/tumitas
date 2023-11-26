@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
@@ -17,7 +18,8 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
 
   Bucket bucket = Bucket(
       bucketTitle: 'Bucket Title',
-      color: Colors.grey,
+      bucketInnerColor: bucketInnerColorList[2],
+      bucketOuterColor: bucketOuterColorList[1],
       bucketSizeCells: BucketSizeCells(5, 6),
       bucketIntoBlock: [],
       bucketMaxPosition: []);

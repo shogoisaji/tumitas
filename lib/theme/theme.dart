@@ -24,4 +24,18 @@ class MyTheme {
   static const Color royalPurple = Color(0xff7142ff);
   static const Color vividPink = Color(0xffd83bff);
   static const Color hotPink = Color(0xffff3bb1);
+
+  // bucket outer color
+  static const Color twilightBlue = Color(0xff2d395a);
+  static const Color deepRose = Color(0xff893f3f);
+  static const Color oceanGreen = Color(0xff234753);
+  static const Color darkPurple = Color(0xff551c55);
+  static const Color oliveGold = Color(0xff85852c);
+
+  // bucket inner color
+  static const Color periwinkleBlue = Color(0xff7a89b7);
+  static const Color softCoral = Color(0xffb58879);
+  static const Color lightMoss = Color(0xff89b77a);
+  static const Color lavenderBlush = Color(0xffb772b7);
+  static const Color mustardYellow = Color(0xffc7c774);
 }

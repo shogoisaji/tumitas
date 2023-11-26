@@ -14,3 +14,19 @@ List<Color> blockColorList = [
   MyTheme.vividPink,
   MyTheme.hotPink,
 ];
+
+List<Color> bucketOuterColorList = [
+  MyTheme.twilightBlue,
+  MyTheme.deepRose,
+  MyTheme.oceanGreen,
+  MyTheme.darkPurple,
+  MyTheme.oliveGold,
+];
+
+List<Color> bucketInnerColorList = [
+  MyTheme.periwinkleBlue,
+  MyTheme.softCoral,
+  MyTheme.lightMoss,
+  MyTheme.lavenderBlush,
+  MyTheme.mustardYellow,
+];
