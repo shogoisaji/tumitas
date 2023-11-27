@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/config/config.dart';
-import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 
 class BucketSettingDialog extends StatefulWidget {
-  final TextEditingController _textController;
-  final Function(Block) onSettingBlock;
-  final Function(Bucket) onSettingBucket;
+  final Bucket bucket;
+  final Function(Map<String, dynamic>) onSettingBucket;
 
-  const BucketSettingDialog(this._textController,
-      {Key? key, required this.onSettingBucket, required this.onSettingBlock})
-      : super(key: key);
+  const BucketSettingDialog({Key? key, required this.onSettingBucket, required this.bucket}) : super(key: key);
 
   @override
   State<BucketSettingDialog> createState() => _BucketSettingDialogState();
 }
 
 class _BucketSettingDialogState extends State<BucketSettingDialog> {
-  final Color fillColor = MyTheme.grey3;
+  late TextEditingController _textController;
+  final Color contentFillColor = MyTheme.grey3;
   int _selectedInnerColorIndex = 0;
   int _selectedOuterColorIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController(text: widget.bucket.bucketTitle);
+    _selectedInnerColorIndex = bucketInnerColorList.indexOf(widget.bucket.bucketInnerColor);
+    _selectedOuterColorIndex = bucketOuterColorList.indexOf(widget.bucket.bucketOuterColor);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
           child: Column(
             children: [
               TextField(
-                controller: widget._textController,
+                controller: _textController,
                 decoration: InputDecoration(
                   enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -44,14 +49,14 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
                   ),
                   labelText: 'Bucket Title',
                   labelStyle: const TextStyle(color: MyTheme.grey1),
-                  fillColor: fillColor,
+                  fillColor: contentFillColor,
                   filled: true,
                 ),
               ),
               // bucket inner color
               Container(
                   decoration: BoxDecoration(
-                    color: fillColor,
+                    color: contentFillColor,
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(color: MyTheme.grey1, width: 1),
                   ),
@@ -115,7 +120,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
               // bucket outer color
               Container(
                   decoration: BoxDecoration(
-                    color: fillColor,
+                    color: contentFillColor,
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(color: MyTheme.grey1, width: 1),
                   ),
@@ -194,8 +199,12 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            // widget.onSetting(
-            //     Block(blockColorList[_selectedColorIndex], _selectedBlockType, widget._textController.text, ""));
+            Map<String, dynamic> settingBucketProperties = {
+              'title': _textController.text,
+              'innerColor': bucketInnerColorList[_selectedInnerColorIndex],
+              'outerColor': bucketOuterColorList[_selectedOuterColorIndex],
+            };
+            widget.onSettingBucket(settingBucketProperties);
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(

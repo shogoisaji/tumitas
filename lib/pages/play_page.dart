@@ -25,9 +25,16 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     bucketIntoBlock: [],
   );
 
-  void _handleSetBucket(Bucket bucket) {
+  void _handleSetBucket(Map<String, dynamic> settingBucketProperties) {
+    final Bucket changeBucket = Bucket(
+      bucketTitle: settingBucketProperties['title'],
+      bucketInnerColor: settingBucketProperties['innerColor'],
+      bucketOuterColor: settingBucketProperties['outerColor'],
+      bucketLayoutSize: currentBucket.bucketLayoutSize,
+      bucketIntoBlock: currentBucket.bucketIntoBlock,
+    );
     setState(() {
-      currentBucket = bucket;
+      currentBucket = changeBucket;
     });
   }
 
@@ -56,14 +63,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
             ),
           ),
           Positioned(
-            bottom: 10,
-            right: 10,
-            child: MultiFloatingBottom(
-              onSetBucket: _handleSetBucket,
-              onSetBlock: _handleSetBlock,
-            ),
-          ),
-          Positioned(
             top: 10,
             left: 10,
             child: ElevatedButton(
@@ -88,6 +87,11 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
               },
               child: const Text('load'),
             ),
+          ),
+          MultiFloatingBottom(
+            currentBucket: currentBucket,
+            onSetBucket: _handleSetBucket,
+            onSetBlock: _handleSetBlock,
           ),
         ],
       ),

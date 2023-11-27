@@ -6,10 +6,12 @@ import 'package:tumitas/widgets/block_setting_dialog.dart';
 import 'package:tumitas/widgets/bucket_setting_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
-  final Function(Bucket) onSetBucket;
+  final Bucket currentBucket;
+  final Function(Map<String, dynamic>) onSetBucket;
   final Function(Block) onSetBlock;
 
-  const MultiFloatingBottom({super.key, required this.onSetBucket, required this.onSetBlock});
+  const MultiFloatingBottom(
+      {super.key, required this.onSetBucket, required this.onSetBlock, required this.currentBucket});
 
   @override
   State<MultiFloatingBottom> createState() => _MultiFloatingBottomState();
@@ -19,17 +21,15 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
   bool isPressed = false;
   String nextBlockTitle = '';
 
-  void _handleSetBucket(Bucket bucket) {
+  void _handleSetBucket(Map<String, dynamic> settingBucketProperties) {
     setState(() {
-      isPressed = false;
-      widget.onSetBucket(bucket);
+      widget.onSetBucket(settingBucketProperties);
     });
   }
 
   void _handleSetBlock(Block block) {
     setState(() {
       widget.onSetBlock(block);
-      print(block.title);
     });
   }
 
@@ -39,10 +39,12 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
       {
         'icon': Icons.note_alt,
         'onPressed': () {
+          setState(() {
+            isPressed = false;
+          });
           showDialog(
             context: context,
             builder: (_) => BlockSettingDialog(
-              // TextEditingController(),
               onSetting: (Block block) {
                 setState(() {
                   _handleSetBlock(block);
@@ -55,16 +57,18 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
       {
         'icon': Icons.change_circle,
         'onPressed': () {
+          setState(() {
+            isPressed = false;
+          });
           showDialog(
             context: context,
             builder: (_) => BucketSettingDialog(
-              TextEditingController(),
-              onSettingBlock: (Block block) {
+              bucket: widget.currentBucket,
+              onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
                 setState(() {
-                  // _handleSetBlock(block);
+                  _handleSetBucket(settingBucketProperties);
                 });
               },
-              onSettingBucket: _handleSetBucket,
             ),
           );
         },
@@ -73,50 +77,77 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
         'icon': Icons.menu_book,
         'onPressed': () {
           setState(() {
-            // isPressed = !isPressed;
+            isPressed = false;
           });
         },
       },
     ];
 
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 6, right: 2),
-        child: isPressed
-            ? Column(
-                children: [
-                  ...floatingButtonList.map((floatingButton) {
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        FloatingActionButton(
-                          shape: const CircleBorder(),
-                          elevation: 4,
-                          backgroundColor: MyTheme.green1,
-                          onPressed: floatingButton['onPressed'],
-                          child: Icon(floatingButton['icon'], color: Colors.white, size: 28),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ],
-              )
-            : FloatingActionButton(
-                shape: const CircleBorder(),
-                elevation: 4,
-                backgroundColor: MyTheme.green1,
-                onPressed: () {
-                  setState(() {
-                    isPressed = true;
-                    Future.delayed(const Duration(seconds: 3), () {
-                      setState(() {
-                        isPressed = false;
-                      });
+    return isPressed
+        ? GestureDetector(
+            onTap: () {
+              setState(() {
+                isPressed = false;
+              });
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.black26,
+                    Colors.black54,
+                  ],
+                ),
+              ),
+              alignment: Alignment.bottomRight,
+              width: double.infinity,
+              height: double.infinity,
+              child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12, right: 12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ...floatingButtonList.map((floatingButton) {
+                        return Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            FloatingActionButton(
+                              shape: const CircleBorder(),
+                              elevation: 4,
+                              backgroundColor: MyTheme.green1,
+                              onPressed: floatingButton['onPressed'],
+                              child: Icon(floatingButton['icon'], color: Colors.white, size: 28),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ],
+                  )),
+            ),
+          )
+        : Container(
+            alignment: Alignment.bottomRight,
+            width: double.infinity,
+            height: double.infinity,
+            child: Padding(
+                padding: const EdgeInsets.only(bottom: 12, right: 12),
+                child: FloatingActionButton(
+                  shape: const CircleBorder(),
+                  elevation: 4,
+                  backgroundColor: MyTheme.green1,
+                  onPressed: () {
+                    setState(() {
+                      isPressed = true;
                     });
-                  });
-                },
-                child: const Icon(Icons.menu_book, color: Colors.white, size: 28),
-              ));
+                  },
+                  child: const Icon(Icons.menu_book, color: Colors.white, size: 28),
+                )),
+          );
   }
 }

@@ -4,7 +4,6 @@ import 'package:tumitas/models/block.dart';
 import 'package:tumitas/theme/theme.dart';
 
 class BlockSettingDialog extends StatefulWidget {
-  // final TextEditingController _textController;
   final Function(Block) onSetting;
 
   const BlockSettingDialog({Key? key, required this.onSetting}) : super(key: key);
@@ -14,8 +13,8 @@ class BlockSettingDialog extends StatefulWidget {
 }
 
 class _BlockSettingDialogState extends State<BlockSettingDialog> {
-  TextEditingController _textController = TextEditingController();
-  final Color fillColor = MyTheme.grey3;
+  final TextEditingController _textController = TextEditingController();
+  final Color contentFillColor = MyTheme.grey3;
   BlockType _selectedBlockType = BlockType.block1x1;
   int _selectedColorIndex = 0;
 
@@ -41,14 +40,14 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
                   ),
                   labelText: 'Task Title',
                   labelStyle: const TextStyle(color: MyTheme.grey1),
-                  fillColor: fillColor,
+                  fillColor: contentFillColor,
                   filled: true,
                 ),
                 maxLines: 2,
               ),
               Container(
                   decoration: BoxDecoration(
-                    color: fillColor,
+                    color: contentFillColor,
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(color: MyTheme.grey1, width: 1),
                   ),
@@ -105,7 +104,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
                   )),
               Container(
                 decoration: BoxDecoration(
-                  color: fillColor,
+                  color: contentFillColor,
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: MyTheme.grey1, width: 1),
                 ),
