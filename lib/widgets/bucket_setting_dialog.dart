@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
+import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 
 class BucketSettingDialog extends StatefulWidget {
   final TextEditingController _textController;
-  final Function(Block) onSetting;
-  final Function(String) onSubmitted;
+  final Function(Block) onSettingBlock;
+  final Function(Bucket) onSettingBucket;
 
-  const BucketSettingDialog(this._textController, {Key? key, required this.onSubmitted, required this.onSetting})
+  const BucketSettingDialog(this._textController,
+      {Key? key, required this.onSettingBucket, required this.onSettingBlock})
       : super(key: key);
 
   @override

@@ -17,7 +17,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   String nextBlockTitle = '';
   Block? nextSettingBlock;
 
-  Bucket bucket = Bucket(
+  Bucket currentBucket = Bucket(
     bucketTitle: 'Bucket Title',
     bucketInnerColor: bucketInnerColorList[2],
     bucketOuterColor: bucketOuterColorList[1],
@@ -25,9 +25,9 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     bucketIntoBlock: [],
   );
 
-  void _handleSubmitted(String newTitle) {
+  void _handleSetBucket(Bucket bucket) {
     setState(() {
-      nextBlockTitle = newTitle;
+      currentBucket = bucket;
     });
   }
 
@@ -48,8 +48,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   PlaySpaceWidget(
-                    bucket: bucket,
-                    nextBlockTitle: nextBlockTitle,
+                    bucket: currentBucket,
                     nextSettingBlock: nextSettingBlock,
                   ),
                 ],
@@ -60,7 +59,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
             bottom: 10,
             right: 10,
             child: MultiFloatingBottom(
-              onSubmittedText: _handleSubmitted,
+              onSetBucket: _handleSetBucket,
               onSetBlock: _handleSetBlock,
             ),
           ),
@@ -69,7 +68,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
             left: 10,
             child: ElevatedButton(
               onPressed: () {
-                SharedPreferencesHelper().saveBucket(bucket);
+                SharedPreferencesHelper().saveBucket(currentBucket);
               },
               child: const Text('save'),
             ),
@@ -79,9 +78,8 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
             right: 10,
             child: ElevatedButton(
               onPressed: () async {
-                final Bucket? bucket =
-                    await SharedPreferencesHelper().loadBucket();
-                print(bucket?.bucketIntoBlock.toString());
+                final Bucket? loadBucket = await SharedPreferencesHelper().loadBucket();
+                print(loadBucket?.bucketIntoBlock.toString());
                 // if (bucket != null) {
                 //   setState(() {
                 //     this.bucket = bucket;

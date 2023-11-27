@@ -8,13 +8,11 @@ import 'package:tumitas/widgets/bucket_widget.dart';
 
 class PlaySpaceWidget extends StatefulWidget {
   final Bucket bucket;
-  final String nextBlockTitle;
   final Block? nextSettingBlock;
 
   const PlaySpaceWidget({
     Key? key,
     required this.bucket,
-    required this.nextBlockTitle,
     required this.nextSettingBlock,
   }) : super(key: key);
 
@@ -22,8 +20,7 @@ class PlaySpaceWidget extends StatefulWidget {
   State<PlaySpaceWidget> createState() => _PlaySpaceWidgetState();
 }
 
-class _PlaySpaceWidgetState extends State<PlaySpaceWidget>
-    with TickerProviderStateMixin {
+class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderStateMixin {
   late AnimationController _shakeAnimationController;
   late AnimationController _swipeDownAnimationController;
   double blockCoordinateX = 0.0;
@@ -51,6 +48,8 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget>
     if (widget.nextSettingBlock != oldWidget.nextSettingBlock) {
       setState(() {
         nextBlock = widget.nextSettingBlock;
+        print(nextBlock!.blockType.toString());
+
         blockCoordinateX = 0.0;
       });
     }
@@ -66,22 +65,18 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget>
   void _setNextBlockPosition() {
     if (nextBlock == null) return;
     setState(() {
-      blockCoordinateX =
-          ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) *
-              oneBlockSize;
+      blockCoordinateX = ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
       if (blockCoordinateX >
-          widget.bucket.bucketLayoutSize.x * oneBlockSize -
-              nextBlock!.blockType.blockSize.x * oneBlockSize) {
-        blockCoordinateX = widget.bucket.bucketLayoutSize.x * oneBlockSize -
-            nextBlock!.blockType.blockSize.x * oneBlockSize;
+          widget.bucket.bucketLayoutSize.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize) {
+        blockCoordinateX =
+            widget.bucket.bucketLayoutSize.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize;
       }
     });
   }
 
   void _onSwipeDown() {
     if (nextBlock == null) return;
-    final addAvailable =
-        widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
+    final addAvailable = widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
     if (!addAvailable) {
       _shakeAnimationController.repeat();
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -133,11 +128,8 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget>
                             blockCoordinateX = 0;
                           } else if (blockCoordinateX >
                               widget.bucket.bucketLayoutSize.x * oneBlockSize -
-                                  nextBlock!.blockType.blockSize.x *
-                                      oneBlockSize) {
-                            blockCoordinateX = widget
-                                        .bucket.bucketLayoutSize.x *
-                                    oneBlockSize -
+                                  nextBlock!.blockType.blockSize.x * oneBlockSize) {
+                            blockCoordinateX = widget.bucket.bucketLayoutSize.x * oneBlockSize -
                                 nextBlock!.blockType.blockSize.x * oneBlockSize;
                           }
                         },
@@ -158,10 +150,8 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget>
                         },
                         child: nextBlock != null
                             ? Container(
-                                width: nextBlock!.blockType.blockSize.x *
-                                    oneBlockSize,
-                                height: nextBlock!.blockType.blockSize.y *
-                                    oneBlockSize,
+                                width: nextBlock!.blockType.blockSize.x * oneBlockSize,
+                                height: nextBlock!.blockType.blockSize.y * oneBlockSize,
                                 color: Colors.transparent,
                               )
                             : Container())),

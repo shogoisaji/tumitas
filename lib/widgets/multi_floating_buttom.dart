@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/models/block.dart';
+import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 import 'package:tumitas/widgets/block_setting_dialog.dart';
 import 'package:tumitas/widgets/bucket_setting_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
-  final Function(String) onSubmittedText;
+  final Function(Bucket) onSetBucket;
   final Function(Block) onSetBlock;
 
-  const MultiFloatingBottom({super.key, required this.onSubmittedText, required this.onSetBlock});
+  const MultiFloatingBottom({super.key, required this.onSetBucket, required this.onSetBlock});
 
   @override
   State<MultiFloatingBottom> createState() => _MultiFloatingBottomState();
@@ -18,16 +19,17 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
   bool isPressed = false;
   String nextBlockTitle = '';
 
-  void _handleSubmitted(String newTitle) {
+  void _handleSetBucket(Bucket bucket) {
     setState(() {
       isPressed = false;
-      widget.onSubmittedText(newTitle);
+      widget.onSetBucket(bucket);
     });
   }
 
   void _handleSetBlock(Block block) {
     setState(() {
       widget.onSetBlock(block);
+      print(block.title);
     });
   }
 
@@ -40,13 +42,12 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
           showDialog(
             context: context,
             builder: (_) => BlockSettingDialog(
-              TextEditingController(),
+              // TextEditingController(),
               onSetting: (Block block) {
                 setState(() {
                   _handleSetBlock(block);
                 });
               },
-              onSubmitted: _handleSubmitted,
             ),
           );
         },
@@ -58,12 +59,12 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
             context: context,
             builder: (_) => BucketSettingDialog(
               TextEditingController(),
-              onSetting: (Block block) {
+              onSettingBlock: (Block block) {
                 setState(() {
-                  _handleSetBlock(block);
+                  // _handleSetBlock(block);
                 });
               },
-              onSubmitted: _handleSubmitted,
+              onSettingBucket: _handleSetBucket,
             ),
           );
         },

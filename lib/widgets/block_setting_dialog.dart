@@ -4,19 +4,17 @@ import 'package:tumitas/models/block.dart';
 import 'package:tumitas/theme/theme.dart';
 
 class BlockSettingDialog extends StatefulWidget {
-  final TextEditingController _textController;
+  // final TextEditingController _textController;
   final Function(Block) onSetting;
-  final Function(String) onSubmitted;
 
-  const BlockSettingDialog(this._textController,
-      {Key? key, required this.onSubmitted, required this.onSetting})
-      : super(key: key);
+  const BlockSettingDialog({Key? key, required this.onSetting}) : super(key: key);
 
   @override
   State<BlockSettingDialog> createState() => _BlockSettingDialogState();
 }
 
 class _BlockSettingDialogState extends State<BlockSettingDialog> {
+  TextEditingController _textController = TextEditingController();
   final Color fillColor = MyTheme.grey3;
   BlockType _selectedBlockType = BlockType.block1x1;
   int _selectedColorIndex = 0;
@@ -25,8 +23,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Task Settings',
-          style: TextStyle(
-              color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 32)),
+          style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 32)),
       backgroundColor: MyTheme.green5,
       content: SingleChildScrollView(
         child: Container(
@@ -36,7 +33,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
           child: Column(
             children: [
               TextField(
-                controller: widget._textController,
+                controller: _textController,
                 decoration: InputDecoration(
                   enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -73,44 +70,32 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: _selectedBlockType ==
-                                            BlockType.values[i]
-                                        ? Border.all(
-                                            color: Colors.black54, width: 3)
-                                        : Border.all(
-                                            color: Colors.transparent,
-                                            width: 3),
+                                    border: _selectedBlockType == BlockType.values[i]
+                                        ? Border.all(color: Colors.black54, width: 3)
+                                        : Border.all(color: Colors.transparent, width: 3),
                                   ),
                                   padding: const EdgeInsets.all(3),
                                   child: GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        _selectedBlockType =
-                                            BlockType.values[i];
+                                        _selectedBlockType = BlockType.values[i];
                                       });
                                     },
                                     child: Align(
                                       child: Container(
-                                        width: BlockType.values[i].blockSize.x *
-                                            30,
-                                        height:
-                                            BlockType.values[i].blockSize.y *
-                                                30,
+                                        width: BlockType.values[i].blockSize.x * 30,
+                                        height: BlockType.values[i].blockSize.y * 30,
                                         decoration: BoxDecoration(
-                                          color: blockColorList[
-                                              _selectedColorIndex],
-                                          borderRadius:
-                                              BorderRadius.circular(6),
+                                          color: blockColorList[_selectedColorIndex],
+                                          borderRadius: BorderRadius.circular(6),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
-                                    '${BlockType.values[i].blockSize.x}x${BlockType.values[i].blockSize.y}',
-                                    style: const TextStyle(
-                                        color: MyTheme.grey1, fontSize: 16)),
+                                Text('${BlockType.values[i].blockSize.x}x${BlockType.values[i].blockSize.y}',
+                                    style: const TextStyle(color: MyTheme.grey1, fontSize: 16)),
                                 const SizedBox(height: 6),
                               ],
                             ),
@@ -142,9 +127,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: _selectedColorIndex == index
-                              ? Border.all(color: Colors.black54, width: 3)
-                              : null,
+                          border: _selectedColorIndex == index ? Border.all(color: Colors.black54, width: 3) : null,
                         ),
                         padding: const EdgeInsets.all(3),
                         child: GestureDetector(
@@ -184,8 +167,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            widget.onSetting(Block(blockColorList[_selectedColorIndex], "",
-                widget._textController.text, _selectedBlockType));
+            widget.onSetting(Block(blockColorList[_selectedColorIndex], _textController.text, "", _selectedBlockType));
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
@@ -195,11 +177,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
             ),
             backgroundColor: MyTheme.green1,
           ),
-          child: const Text('OK',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20)),
+          child: const Text('OK', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
         ),
       ],
     );
