@@ -4,14 +4,34 @@ class Block {
   final Color color;
   final String title;
   final String description;
-  // final BlockSize blockSize;
   final BlockType blockType;
+
   Block(
     this.color,
-    this.blockType,
     this.title,
     this.description,
+    this.blockType,
   );
+
+  Map<String, dynamic> toJson() => {
+        'color': color.value,
+        'title': title,
+        'description': description,
+        'blockType': blockType
+            .toString()
+            .split('.')
+            .last, // toString()->"BlockType.block1x1"
+      };
+
+  factory Block.fromJson(Map<String, dynamic> json) {
+    return Block(
+      Color(json['color']),
+      json['title'],
+      json['description'],
+      BlockType.values
+          .firstWhere((e) => e.toString().split('.').last == json['blockType']),
+    );
+  }
 }
 
 class BlockSize {

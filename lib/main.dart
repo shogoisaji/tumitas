@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/pages/play_page.dart';
 import 'package:tumitas/pages/settings_page.dart';
+import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/theme/theme.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
+  await SharedPreferencesHelper.init();
 }
 
 class MyApp extends StatelessWidget {
@@ -66,7 +68,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           onTap: (index) {
             setState(() {
               currentIndex = index;
-              pageController.animateToPage(index, duration: const Duration(milliseconds: 400), curve: Curves.ease);
+              pageController.animateToPage(index,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.ease);
             });
           },
           items: [
