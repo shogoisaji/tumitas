@@ -22,7 +22,8 @@ class PlaySpaceWidget extends StatefulWidget {
   State<PlaySpaceWidget> createState() => _PlaySpaceWidgetState();
 }
 
-class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderStateMixin {
+class _PlaySpaceWidgetState extends State<PlaySpaceWidget>
+    with TickerProviderStateMixin {
   late AnimationController _shakeAnimationController;
   late AnimationController _swipeDownAnimationController;
   double blockCoordinateX = 0.0;
@@ -65,18 +66,22 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
   void _setNextBlockPosition() {
     if (nextBlock == null) return;
     setState(() {
-      blockCoordinateX = ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
+      blockCoordinateX =
+          ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) *
+              oneBlockSize;
       if (blockCoordinateX >
-          widget.bucket.bucketSizeCells.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize) {
-        blockCoordinateX =
-            widget.bucket.bucketSizeCells.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize;
+          widget.bucket.bucketLayoutSize.x * oneBlockSize -
+              nextBlock!.blockType.blockSize.x * oneBlockSize) {
+        blockCoordinateX = widget.bucket.bucketLayoutSize.x * oneBlockSize -
+            nextBlock!.blockType.blockSize.x * oneBlockSize;
       }
     });
   }
 
   void _onSwipeDown() {
     if (nextBlock == null) return;
-    final addAvailable = widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
+    final addAvailable =
+        widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
     if (!addAvailable) {
       _shakeAnimationController.repeat();
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -98,7 +103,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
       children: [
         // next block area
         Container(
-          width: oneBlockSize * widget.bucket.bucketSizeCells.x,
+          width: oneBlockSize * widget.bucket.bucketLayoutSize.x,
           height: oneBlockSize * 2,
           margin: const EdgeInsets.only(bottom: 10),
           child: Stack(
@@ -127,9 +132,12 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                           if (blockCoordinateX < 0) {
                             blockCoordinateX = 0;
                           } else if (blockCoordinateX >
-                              widget.bucket.bucketSizeCells.x * oneBlockSize -
-                                  nextBlock!.blockType.blockSize.x * oneBlockSize) {
-                            blockCoordinateX = widget.bucket.bucketSizeCells.x * oneBlockSize -
+                              widget.bucket.bucketLayoutSize.x * oneBlockSize -
+                                  nextBlock!.blockType.blockSize.x *
+                                      oneBlockSize) {
+                            blockCoordinateX = widget
+                                        .bucket.bucketLayoutSize.x *
+                                    oneBlockSize -
                                 nextBlock!.blockType.blockSize.x * oneBlockSize;
                           }
                         },
@@ -150,8 +158,10 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                         },
                         child: nextBlock != null
                             ? Container(
-                                width: nextBlock!.blockType.blockSize.x * oneBlockSize,
-                                height: nextBlock!.blockType.blockSize.y * oneBlockSize,
+                                width: nextBlock!.blockType.blockSize.x *
+                                    oneBlockSize,
+                                height: nextBlock!.blockType.blockSize.y *
+                                    oneBlockSize,
                                 color: Colors.transparent,
                               )
                             : Container())),

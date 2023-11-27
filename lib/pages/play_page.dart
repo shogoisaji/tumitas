@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
+import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
 
@@ -17,12 +18,12 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   Block? nextSettingBlock;
 
   Bucket bucket = Bucket(
-      bucketTitle: 'Bucket Title',
-      bucketInnerColor: bucketInnerColorList[2],
-      bucketOuterColor: bucketOuterColorList[1],
-      bucketSizeCells: BucketSizeCells(5, 6),
-      bucketIntoBlock: [],
-      bucketMaxPosition: []);
+    bucketTitle: 'Bucket Title',
+    bucketInnerColor: bucketInnerColorList[2],
+    bucketOuterColor: bucketOuterColorList[1],
+    bucketLayoutSize: BucketLayoutSize(5, 6),
+    bucketIntoBlock: [],
+  );
 
   void _handleSubmitted(String newTitle) {
     setState(() {
@@ -62,7 +63,34 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
               onSubmittedText: _handleSubmitted,
               onSetBlock: _handleSetBlock,
             ),
-          )
+          ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: ElevatedButton(
+              onPressed: () {
+                SharedPreferencesHelper().saveBucket(bucket);
+              },
+              child: const Text('save'),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: ElevatedButton(
+              onPressed: () async {
+                final Bucket? bucket =
+                    await SharedPreferencesHelper().loadBucket();
+                print(bucket?.bucketIntoBlock.toString());
+                // if (bucket != null) {
+                //   setState(() {
+                //     this.bucket = bucket;
+                //   });
+                // }
+              },
+              child: const Text('load'),
+            ),
+          ),
         ],
       ),
     );
