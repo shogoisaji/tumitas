@@ -3,15 +3,16 @@ import 'package:tumitas/models/block.dart';
 import 'dart:convert';
 
 class Bucket {
+  final String bucketTitle;
+  final String bucketDescription;
   final Color bucketInnerColor;
   final Color bucketOuterColor;
   final BucketLayoutSize bucketLayoutSize;
-  final String bucketTitle;
-  final List<Map<String, dynamic>>
-      bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
+  final List<Map<String, dynamic>> bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
 
   Bucket({
     required this.bucketTitle,
+    required this.bucketDescription,
     required this.bucketInnerColor,
     required this.bucketOuterColor,
     required this.bucketLayoutSize,
@@ -29,8 +30,7 @@ class Bucket {
     return encodedBucketIntoBlock;
   }
 
-  static List<Map<String, dynamic>> jsonDecodeBucketIntoBlock(
-      List<String> encodedList) {
+  static List<Map<String, dynamic>> jsonDecodeBucketIntoBlock(List<String> encodedList) {
     return encodedList.map((encodedItem) {
       Map<String, dynamic> decoded = json.decode(encodedItem);
       return {
@@ -41,21 +41,22 @@ class Bucket {
   }
 
   Map<String, dynamic> toJson() => {
+        'bucketTitle': bucketTitle,
+        'bucketDescription': bucketDescription,
         'bucketInnerColor': bucketInnerColor.value,
         'bucketOuterColor': bucketOuterColor.value,
         'bucketLayoutSize': bucketLayoutSize.toJson(),
-        'bucketTitle': bucketTitle,
         'bucketIntoBlock': jsonEncodeBucketIntoBlock(),
       };
 
   factory Bucket.fromJson(Map<String, dynamic> json) {
     return Bucket(
+      bucketTitle: json['bucketTitle'],
+      bucketDescription: json['bucketDescription'],
       bucketInnerColor: Color(json['bucketInnerColor']),
       bucketOuterColor: Color(json['bucketOuterColor']),
       bucketLayoutSize: BucketLayoutSize.fromJson(json['bucketLayoutSize']),
-      bucketTitle: json['bucketTitle'],
-      bucketIntoBlock:
-          jsonDecodeBucketIntoBlock(json['bucketIntoBlock'].cast<String>()),
+      bucketIntoBlock: jsonDecodeBucketIntoBlock(json['bucketIntoBlock'].cast<String>()),
     );
   }
 
@@ -65,8 +66,7 @@ class Bucket {
     block.blockType.blockSize.y;
     for (int i = 0; i < block.blockType.blockSize.x; i++) {
       for (int j = 0; j < block.blockType.blockSize.y; j++) {
-        dismantlePosition
-            .add(Position(position.positionX + i, position.positionY + j));
+        dismantlePosition.add(Position(position.positionX + i, position.positionY + j));
       }
     }
     return dismantlePosition;
@@ -77,13 +77,11 @@ class Bucket {
     int maxPositionY = -1;
 
     for (int i = 0; i < bucketIntoBlock.length; i++) {
-      existPosition.addAll(fragmentBlockPosition(
-          bucketIntoBlock[i]['block'], bucketIntoBlock[i]['position']));
+      existPosition.addAll(fragmentBlockPosition(bucketIntoBlock[i]['block'], bucketIntoBlock[i]['position']));
     }
     for (int w = 0; w < block.blockType.blockSize.x; w++) {
       for (int l = 0; l < existPosition.length; l++) {
-        if (existPosition[l].positionX == selectPositionX + w &&
-            existPosition[l].positionY > maxPositionY) {
+        if (existPosition[l].positionX == selectPositionX + w && existPosition[l].positionY > maxPositionY) {
           maxPositionY = existPosition[l].positionY;
         }
       }
@@ -93,13 +91,12 @@ class Bucket {
 
   bool addNewBlock(Block newBlock, int newPositionX) {
     final maxPositionY = getMaxPositionY(newBlock, newPositionX);
-    if (maxPositionY + newBlock.blockType.blockSize.y >
-        bucketLayoutSize.y - 1) {
+    if (maxPositionY + newBlock.blockType.blockSize.y > bucketLayoutSize.y - 1) {
       return false;
     }
     final newPosition = Position(newPositionX, maxPositionY + 1);
 
-    bucketIntoBlock.add({'block': newBlock, 'position': newPosition});
+    bucketIntoBlock.add({'block': newBlock as Block, 'position': newPosition as Position});
     return true;
   }
 }

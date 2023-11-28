@@ -38,6 +38,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
     List<Map<String, dynamic>> floatingButtonList = [
       {
         'icon': Icons.note_alt,
+        'title': 'Task    ',
         'onPressed': () {
           setState(() {
             isPressed = false;
@@ -56,6 +57,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
       },
       {
         'icon': Icons.change_circle,
+        'title': 'Bucket',
         'onPressed': () {
           setState(() {
             isPressed = false;
@@ -73,14 +75,15 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
           );
         },
       },
-      {
-        'icon': Icons.menu_book,
-        'onPressed': () {
-          setState(() {
-            isPressed = false;
-          });
-        },
-      },
+      // {
+      //   'icon': Icons.menu_book,
+      //   'title': '',
+      //   'onPressed': () {
+      //     setState(() {
+      //       isPressed = false;
+      //     });
+      //   },
+      // },
     ];
 
     return isPressed
@@ -107,7 +110,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
               width: double.infinity,
               height: double.infinity,
               child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12, right: 12),
+                  padding: const EdgeInsets.only(bottom: 16, right: 16),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -115,15 +118,28 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
                         return Column(
                           children: [
                             const SizedBox(
-                              height: 10,
+                              height: 16,
                             ),
-                            FloatingActionButton(
-                              shape: const CircleBorder(),
-                              elevation: 4,
-                              backgroundColor: MyTheme.green1,
-                              onPressed: floatingButton['onPressed'],
-                              child: Icon(floatingButton['icon'], color: Colors.white, size: 28),
-                            ),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  // shape: const CircleBorder(),
+                                  elevation: 4,
+                                  backgroundColor: MyTheme.green1,
+                                ),
+                                onPressed: floatingButton['onPressed'],
+                                child: Container(
+                                  // padding: const EdgeInsets.all(4),
+                                  width: 100,
+                                  height: 60,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(floatingButton['icon'], color: Colors.white, size: 28),
+                                      Text(floatingButton['title'],
+                                          style: const TextStyle(color: Colors.white, fontSize: 16))
+                                    ],
+                                  ),
+                                )),
                           ],
                         );
                       }).toList(),
@@ -136,7 +152,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
             width: double.infinity,
             height: double.infinity,
             child: Padding(
-                padding: const EdgeInsets.only(bottom: 12, right: 12),
+                padding: const EdgeInsets.only(bottom: 16, right: 16),
                 child: FloatingActionButton(
                   shape: const CircleBorder(),
                   elevation: 4,

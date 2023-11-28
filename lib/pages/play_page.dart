@@ -3,6 +3,7 @@ import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
+import 'package:tumitas/services/sqflite_helper.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
 
@@ -18,16 +19,18 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   Block? nextSettingBlock;
 
   Bucket currentBucket = Bucket(
-    bucketTitle: 'Bucket Title',
-    bucketInnerColor: bucketInnerColorList[2],
-    bucketOuterColor: bucketOuterColorList[1],
-    bucketLayoutSize: BucketLayoutSize(5, 6),
+    bucketTitle: 'default',
+    bucketDescription: 'default',
+    bucketInnerColor: bucketInnerColorList[0],
+    bucketOuterColor: bucketOuterColorList[0],
+    bucketLayoutSize: BucketLayoutSize(1, 1),
     bucketIntoBlock: [],
   );
 
   void _handleSetBucket(Map<String, dynamic> settingBucketProperties) {
     final Bucket changeBucket = Bucket(
       bucketTitle: settingBucketProperties['title'],
+      bucketDescription: settingBucketProperties['description'] ?? 'default',
       bucketInnerColor: settingBucketProperties['innerColor'],
       bucketOuterColor: settingBucketProperties['outerColor'],
       bucketLayoutSize: currentBucket.bucketLayoutSize,
@@ -44,6 +47,26 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     });
   }
 
+  void saveCurrentBucket(Bucket bucket) async {
+    final int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
+    print('savedBucketId: $bucketId');
+  }
+
+  Future<Bucket?> loadBucket() async {
+    final int? bucketId = await SharedPreferencesHelper().loadCurrentBucketId();
+    if (bucketId != null) {
+      final Map<String, dynamic>? bucket = await SqfliteHelper.instance.findById(bucketId);
+
+      return null;
+    }
+    return null;
+  }
+
+  @override
+  initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -54,9 +77,23 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  PlaySpaceWidget(
-                    bucket: currentBucket,
-                    nextSettingBlock: nextSettingBlock,
+                  const SizedBox(height: 24),
+                  FutureBuilder(
+                    future: loadBucket(),
+                    builder: (BuildContext context, AsyncSnapshot<Bucket?> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text('Error'));
+                      } else if (snapshot.hasData) {
+                        return PlaySpaceWidget(
+                          bucket: snapshot.data!,
+                          nextSettingBlock: nextSettingBlock,
+                        );
+                      } else {
+                        return const Center(child: Text('No Current Bucket'));
+                      }
+                    },
                   ),
                 ],
               ),
@@ -67,7 +104,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
             left: 10,
             child: ElevatedButton(
               onPressed: () {
-                SharedPreferencesHelper().saveBucket(currentBucket);
+                saveCurrentBucket(currentBucket);
               },
               child: const Text('save'),
             ),
@@ -77,8 +114,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
             right: 10,
             child: ElevatedButton(
               onPressed: () async {
-                final Bucket? loadBucket = await SharedPreferencesHelper().loadBucket();
-                print(loadBucket?.bucketIntoBlock.toString());
                 // if (bucket != null) {
                 //   setState(() {
                 //     this.bucket = bucket;
