@@ -23,7 +23,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     bucketDescription: 'default',
     bucketInnerColor: bucketInnerColorList[0],
     bucketOuterColor: bucketOuterColorList[0],
-    bucketLayoutSize: BucketLayoutSize(1, 1),
+    bucketLayoutSize: BucketLayoutSize(5, 5),
     bucketIntoBlock: [],
   );
 
@@ -53,11 +53,12 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   }
 
   Future<Bucket?> loadBucket() async {
-    final int? bucketId = await SharedPreferencesHelper().loadCurrentBucketId();
+    // final int? bucketId = await SharedPreferencesHelper().loadCurrentBucketId();
+    final bucketId = 2;
     if (bucketId != null) {
-      final Map<String, dynamic>? bucket = await SqfliteHelper.instance.findById(bucketId);
-
-      return null;
+      final Bucket? bucket = await SqfliteHelper.instance.findById(bucketId);
+      print('loadedBucketId: $bucketId');
+      return bucket;
     }
     return null;
   }
@@ -80,7 +81,8 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                   const SizedBox(height: 24),
                   FutureBuilder(
                     future: loadBucket(),
-                    builder: (BuildContext context, AsyncSnapshot<Bucket?> snapshot) {
+                    builder: (BuildContext context,
+                        AsyncSnapshot<Bucket?> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
