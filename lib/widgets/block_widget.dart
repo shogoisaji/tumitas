@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 
 class BlockWidget extends StatelessWidget {
   final Block block;
   final double titleFontSize = 14;
+  final double oneBlockSize;
   const BlockWidget(
-    this.block, {
+    this.block,
+    this.oneBlockSize, {
     super.key,
   });
 
@@ -34,16 +35,18 @@ class BlockWidget extends StatelessWidget {
               ),
             ],
           ),
-          child: Center(
-              child: Text(
-            block.title,
-            style: TextStyle(
-              fontSize: titleFontSize,
-              color: Colors.black,
-            ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: titleMaxLine(),
-          )),
+          child: oneBlockSize > 30
+              ? Center(
+                  child: Text(
+                  block.title,
+                  style: TextStyle(
+                    fontSize: titleFontSize,
+                    color: Colors.black,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: titleMaxLine(),
+                ))
+              : Container(),
         ));
   }
 }

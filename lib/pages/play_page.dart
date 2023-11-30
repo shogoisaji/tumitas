@@ -4,6 +4,8 @@ import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/services/sqflite_helper.dart';
+import 'package:tumitas/theme/theme.dart';
+import 'package:tumitas/widgets/bucket_setting_dialog.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
 
@@ -17,13 +19,14 @@ class PlayPage extends StatefulWidget {
 class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   String nextBlockTitle = '';
   Block? nextSettingBlock;
+  int currentBucketId = 0;
 
   Bucket currentBucket = Bucket(
     bucketTitle: 'default',
     bucketDescription: 'default',
     bucketInnerColor: bucketInnerColorList[0],
     bucketOuterColor: bucketOuterColorList[0],
-    bucketLayoutSize: BucketLayoutSize(5, 5),
+    bucketLayoutSize: BucketLayoutSize(5, 7),
     bucketIntoBlock: [],
   );
 
@@ -39,6 +42,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     setState(() {
       currentBucket = changeBucket;
     });
+    saveCurrentBucket(changeBucket);
   }
 
   void _handleSetBlock(Block block) {
@@ -53,85 +57,120 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   }
 
   Future<Bucket?> loadBucket() async {
-    // final int? bucketId = await SharedPreferencesHelper().loadCurrentBucketId();
-    final bucketId = 2;
-    if (bucketId != null) {
-      final Bucket? bucket = await SqfliteHelper.instance.findById(bucketId);
-      print('loadedBucketId: $bucketId');
+    if (currentBucketId != 0) {
+      final Bucket? bucket = await SqfliteHelper.instance.findBucketById(currentBucketId);
       return bucket;
     }
     return null;
   }
 
+  void loadCurrentBucketId() async {
+    currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? 0;
+    setState(() {});
+  }
+
   @override
   initState() {
     super.initState();
+    loadCurrentBucketId();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const SizedBox(height: 24),
-                  FutureBuilder(
-                    future: loadBucket(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<Bucket?> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return const Center(child: Text('Error'));
-                      } else if (snapshot.hasData) {
-                        return PlaySpaceWidget(
-                          bucket: snapshot.data!,
-                          nextSettingBlock: nextSettingBlock,
-                        );
-                      } else {
-                        return const Center(child: Text('No Current Bucket'));
-                      }
-                    },
-                  ),
-                ],
+    return Stack(
+      children: [
+        SafeArea(
+          child: Stack(
+            children: [
+              currentBucketId == 0
+                  ? Center(
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 4,
+                            backgroundColor: MyTheme.green1,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) => BucketSettingDialog(
+                                      onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
+                                        setState(() {
+                                          _handleSetBucket(settingBucketProperties);
+                                        });
+                                      },
+                                    ));
+                          },
+                          child: Container(
+                            // padding: const EdgeInsets.all(4),
+                            width: 100,
+                            height: 60,
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.account_box, color: Colors.white, size: 28),
+                                Text('Bucket', style: const TextStyle(color: Colors.white, fontSize: 16))
+                              ],
+                            ),
+                          )),
+                    )
+                  : SingleChildScrollView(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const SizedBox(height: 24),
+                            FutureBuilder(
+                              future: loadBucket(),
+                              builder: (BuildContext context, AsyncSnapshot<Bucket?> snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const Center(child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return const Center(child: Text('Error'));
+                                } else if (snapshot.hasData) {
+                                  return PlaySpaceWidget(
+                                    bucket: snapshot.data!,
+                                    nextSettingBlock: nextSettingBlock,
+                                    currentBucketId: currentBucketId,
+                                  );
+                                } else {
+                                  return const Center(child: Text('No Current Bucket'));
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+              Positioned(
+                top: 10,
+                left: 10,
+                child: ElevatedButton(
+                  onPressed: () {
+                    SharedPreferencesHelper().saveCurrentBucketId(1);
+                    setState(() {});
+                  },
+                  child: const Text('save'),
+                ),
               ),
-            ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    setState(() {});
+                  },
+                  child: const Text('load'),
+                ),
+              ),
+            ],
           ),
-          Positioned(
-            top: 10,
-            left: 10,
-            child: ElevatedButton(
-              onPressed: () {
-                saveCurrentBucket(currentBucket);
-              },
-              child: const Text('save'),
-            ),
-          ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: ElevatedButton(
-              onPressed: () async {
-                // if (bucket != null) {
-                //   setState(() {
-                //     this.bucket = bucket;
-                //   });
-                // }
-              },
-              child: const Text('load'),
-            ),
-          ),
-          MultiFloatingBottom(
-            currentBucket: currentBucket,
-            onSetBucket: _handleSetBucket,
-            onSetBlock: _handleSetBlock,
-          ),
-        ],
-      ),
+        ),
+        MultiFloatingBottom(
+          currentBucket: currentBucket,
+          onSetBucket: _handleSetBucket,
+          onSetBlock: _handleSetBlock,
+        ),
+      ],
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 import 'package:tumitas/widgets/block_setting_dialog.dart';
-import 'package:tumitas/widgets/bucket_setting_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
   final Bucket currentBucket;
@@ -62,17 +61,18 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
           setState(() {
             isPressed = false;
           });
-          showDialog(
-            context: context,
-            builder: (_) => BucketSettingDialog(
-              bucket: widget.currentBucket,
-              onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
-                setState(() {
-                  _handleSetBucket(settingBucketProperties);
-                });
-              },
-            ),
-          );
+          // showDialog(
+          //   context: context,
+          //   builder: (_) =>
+          // BucketSettingDialog(
+          //   bucket: widget.currentBucket,
+          //   onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
+          //     setState(() {
+          //       _handleSetBucket(settingBucketProperties);
+          //     });
+          //   },
+          // ),
+          // );
         },
       },
       // {
@@ -94,18 +94,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
               });
             },
             child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black26,
-                    Colors.black54,
-                  ],
-                ),
-              ),
+              color: Colors.black.withOpacity(0.6),
               alignment: Alignment.bottomRight,
               width: double.infinity,
               height: double.infinity,

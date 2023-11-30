@@ -6,10 +6,10 @@ import 'package:path/path.dart';
 import 'package:tumitas/models/bucket.dart';
 
 class SqfliteHelper {
-  static const _databaseName = "sqflite1_Database.db";
+  static const _databaseName = "sqflite2_Database.db";
   static const _databaseVersion = 1;
 
-  static const bucketTable = 'bucket';
+  static const bucketTable = 'bucketTable';
   static const columnBucketId = 'BucketId';
   static const columnBucketTitle = 'bucketTitle';
   static const columnBucketDescription = 'bucketDescription';
@@ -19,8 +19,8 @@ class SqfliteHelper {
   static const columnBucketLayoutSizeY = 'bucketLayoutSizeY';
   static const columnBucketIntoBlock = 'bucketIntoBlock';
 
-  SqfliteHelper._privateConstructor();
-  static final SqfliteHelper instance = SqfliteHelper._privateConstructor();
+  SqfliteHelper._();
+  static final SqfliteHelper instance = SqfliteHelper._();
 
   static Database? _database;
   Future<Database> get database async {
@@ -31,8 +31,7 @@ class SqfliteHelper {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
-    return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate);
+    return await openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -49,11 +48,6 @@ class SqfliteHelper {
           )
           ''');
   }
-
-  // Future<int> insert(Map<String, dynamic> row) async {
-  //   Database db = await instance.database;
-  //   return await db.insert(bucketTable, row);
-  // }
 
 // add database row
   Future<int>? insertBucket(Bucket bucket) async {
@@ -75,14 +69,17 @@ class SqfliteHelper {
   }
 
 // get database all rows
-  Future<List<Map<String, dynamic>>> queryAllRows() async {
+  Future<List<Bucket>> queryAllBucket() async {
     Database db = await instance.database;
-    return await db.query(bucketTable);
+    List<Map<String, dynamic>>? allBucket = await db.query(bucketTable);
+    if (allBucket == []) return [];
+    final List<Bucket> bucketList = allBucket.map((e) => mapToBucket(e)).toList();
+    return bucketList;
   }
 
 // find by Id
-  Future<Bucket?> findById(int? id) async {
-    final db = await database;
+  Future<Bucket?> findBucketById(int id) async {
+    Database db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query(
       bucketTable,
       where: '$columnBucketId = ?',
@@ -96,28 +93,29 @@ class SqfliteHelper {
     }
   }
 
-  Future<Bucket> mapToBucket(Map<String, dynamic> map) async {
+  Bucket mapToBucket(Map<String, dynamic> map) {
     final Bucket bucket = Bucket(
       bucketTitle: map[columnBucketTitle],
-      bucketDescription: map[columnBucketDescription],
+      bucketDescription: map[columnBucketDescription] ?? '',
       bucketInnerColor: Color(map[columnBucketInnerColor]),
       bucketOuterColor: Color(map[columnBucketOuterColor]),
       bucketLayoutSize: BucketLayoutSize(
         map[columnBucketLayoutSizeX],
         map[columnBucketLayoutSizeY],
       ),
-      bucketIntoBlock: Bucket.jsonDecodeBucketIntoBlock(
-          json.decode(map[columnBucketIntoBlock])),
+      bucketIntoBlock: Bucket.jsonDecodeBucketIntoBlock(json.decode(map[columnBucketIntoBlock])),
     );
     return bucket;
   }
 
-// update title
-  Future<int> updateTitle(int id, String title) async {
+// update bucketIntoBlock
+  Future<int> updateBucketIntoBlock(int id, Bucket bucket) async {
     Database db = await instance.database;
     return await db.update(
       bucketTable,
-      {columnBucketTitle: title},
+      {
+        columnBucketIntoBlock: bucket.jsonEncodeBucketIntoBlock(),
+      },
       where: '$columnBucketId = ?',
       whereArgs: [id],
     );
@@ -136,8 +134,7 @@ class SqfliteHelper {
 // Total Records
   Future<String> getTotal() async {
     Database db = await instance.database;
-    final List<Map<String, dynamic>> maps =
-        await db.rawQuery('SELECT COUNT(*) as count FROM $bucketTable');
+    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT COUNT(*) as count FROM $bucketTable');
 
     return maps.first['count'].toString();
   }

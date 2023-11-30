@@ -3,17 +3,20 @@ import 'package:tumitas/animations/shake_animation.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
+import 'package:tumitas/services/sqflite_helper.dart';
 import 'package:tumitas/widgets/block_widget.dart';
 import 'package:tumitas/widgets/bucket_widget.dart';
 
 class PlaySpaceWidget extends StatefulWidget {
   final Bucket bucket;
+  final int currentBucketId;
   final Block? nextSettingBlock;
 
   const PlaySpaceWidget({
     Key? key,
     required this.bucket,
     required this.nextSettingBlock,
+    required this.currentBucketId,
   }) : super(key: key);
 
   @override
@@ -48,8 +51,6 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
     if (widget.nextSettingBlock != oldWidget.nextSettingBlock) {
       setState(() {
         nextBlock = widget.nextSettingBlock;
-        print(nextBlock!.blockType.toString());
-
         blockCoordinateX = 0.0;
       });
     }
@@ -74,6 +75,11 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
     });
   }
 
+  void saveCurrentBucket(Bucket bucket) async {
+    final int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
+    print('savedBucketId: $bucketId');
+  }
+
   void _onSwipeDown() {
     if (nextBlock == null) return;
     final addAvailable = widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
@@ -88,11 +94,13 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
       nextBlock = null;
     });
     _swipeDownAnimationController.forward();
+    SqfliteHelper.instance.updateBucketIntoBlock(widget.currentBucketId, widget.bucket);
     debugPrint('swipe down');
   }
 
   @override
   Widget build(BuildContext context) {
+    final double oneBlockSize = (MediaQuery.of(context).size.width - 50) / widget.bucket.bucketLayoutSize.x;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -109,9 +117,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                       left: blockCoordinateX,
                       child: ShakeAnimation(
                         animationController: _shakeAnimationController,
-                        child: BlockWidget(
-                          nextBlock!,
-                        ),
+                        child: BlockWidget(nextBlock!, oneBlockSize),
                       ))
                   : Container(),
               Positioned(
@@ -160,7 +166,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
           ),
         ),
         // bucket area
-        BucketWidget(widget.bucket),
+        BucketWidget(widget.bucket, oneBlockSize),
       ],
     );
   }

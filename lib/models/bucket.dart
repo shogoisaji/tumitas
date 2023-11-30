@@ -8,8 +8,7 @@ class Bucket {
   final Color bucketInnerColor;
   final Color bucketOuterColor;
   final BucketLayoutSize bucketLayoutSize;
-  final List<Map<String, dynamic>>
-      bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
+  final List<Map<String, dynamic>> bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
 
   Bucket({
     required this.bucketTitle,
@@ -24,54 +23,46 @@ class Bucket {
     List<String> encodedBucketIntoBlock = [];
     for (int i = 0; i < bucketIntoBlock.length; i++) {
       encodedBucketIntoBlock.add(json.encode({
-        'block': bucketIntoBlock[i]['block'].toJson(),
-        'position': bucketIntoBlock[i]['position'].toJson(),
+        'block': bucketIntoBlock[i]['block'].blockToJson(),
+        'position': bucketIntoBlock[i]['position'].positionToJson(),
       }));
     }
     return json.encode(encodedBucketIntoBlock);
   }
 
-  static List<Map<String, String>> jsonDecodeBucketIntoBlock(
-      List<dynamic> encodedList) {
-    return encodedList.map((encodedItem) {
+  static List<Map<String, dynamic>> jsonDecodeBucketIntoBlock(List<dynamic> encodedList) {
+    if (encodedList.isEmpty) {
+      return [];
+    }
+    final bucketIntoBlocks = encodedList.map((encodedItem) {
       Map<String, dynamic> decoded = json.decode(encodedItem);
       return {
-        'block': Block.fromJson(decoded['block']) as String,
-        'position': Position.fromJson(decoded['position']) as String,
+        'block': Block.blockFromJson(decoded['block']),
+        'position': Position.positionFromJson(decoded['position']),
       };
     }).toList();
+    return bucketIntoBlocks;
   }
-  // static List<Map<String, dynamic>> jsonDecodeBucketIntoBlock(
-  //     List<String> encodedList) {
-  //   return encodedList.map((encodedItem) {
-  //     Map<String, dynamic> decoded = json.decode(encodedItem);
-  //     return {
-  //       'block': Block.fromJson(decoded['block']),
-  //       'position': Position.fromJson(decoded['position']),
+
+  // Map<String, dynamic> toJson() => {
+  //       'bucketTitle': bucketTitle,
+  //       'bucketDescription': bucketDescription,
+  //       'bucketInnerColor': bucketInnerColor.value,
+  //       'bucketOuterColor': bucketOuterColor.value,
+  //       'bucketLayoutSize': bucketLayoutSize.toJson(),
+  //       'bucketIntoBlock': jsonEncodeBucketIntoBlock(),
   //     };
-  //   }).toList();
+
+  // factory Bucket.fromJson(Map<String, dynamic> json) {
+  //   return Bucket(
+  //     bucketTitle: json['bucketTitle'],
+  //     bucketDescription: json['bucketDescription'],
+  //     bucketInnerColor: Color(json['bucketInnerColor']),
+  //     bucketOuterColor: Color(json['bucketOuterColor']),
+  //     bucketLayoutSize: BucketLayoutSize.fromJson(json['bucketLayoutSize']),
+  //     bucketIntoBlock: jsonDecodeBucketIntoBlock(json['bucketIntoBlock'].cast<String>()),
+  //   );
   // }
-
-  Map<String, dynamic> toJson() => {
-        'bucketTitle': bucketTitle,
-        'bucketDescription': bucketDescription,
-        'bucketInnerColor': bucketInnerColor.value,
-        'bucketOuterColor': bucketOuterColor.value,
-        'bucketLayoutSize': bucketLayoutSize.toJson(),
-        'bucketIntoBlock': jsonEncodeBucketIntoBlock(),
-      };
-
-  factory Bucket.fromJson(Map<String, dynamic> json) {
-    return Bucket(
-      bucketTitle: json['bucketTitle'],
-      bucketDescription: json['bucketDescription'],
-      bucketInnerColor: Color(json['bucketInnerColor']),
-      bucketOuterColor: Color(json['bucketOuterColor']),
-      bucketLayoutSize: BucketLayoutSize.fromJson(json['bucketLayoutSize']),
-      bucketIntoBlock:
-          jsonDecodeBucketIntoBlock(json['bucketIntoBlock'].cast<String>()),
-    );
-  }
 
   List<Position> fragmentBlockPosition(Block block, Position position) {
     List<Position> dismantlePosition = [];
@@ -79,8 +70,7 @@ class Bucket {
     block.blockType.blockSize.y;
     for (int i = 0; i < block.blockType.blockSize.x; i++) {
       for (int j = 0; j < block.blockType.blockSize.y; j++) {
-        dismantlePosition
-            .add(Position(position.positionX + i, position.positionY + j));
+        dismantlePosition.add(Position(position.positionX + i, position.positionY + j));
       }
     }
     return dismantlePosition;
@@ -91,13 +81,11 @@ class Bucket {
     int maxPositionY = -1;
 
     for (int i = 0; i < bucketIntoBlock.length; i++) {
-      existPosition.addAll(fragmentBlockPosition(
-          bucketIntoBlock[i]['block'], bucketIntoBlock[i]['position']));
+      existPosition.addAll(fragmentBlockPosition(bucketIntoBlock[i]['block'], bucketIntoBlock[i]['position']));
     }
     for (int w = 0; w < block.blockType.blockSize.x; w++) {
       for (int l = 0; l < existPosition.length; l++) {
-        if (existPosition[l].positionX == selectPositionX + w &&
-            existPosition[l].positionY > maxPositionY) {
+        if (existPosition[l].positionX == selectPositionX + w && existPosition[l].positionY > maxPositionY) {
           maxPositionY = existPosition[l].positionY;
         }
       }
@@ -107,15 +95,12 @@ class Bucket {
 
   bool addNewBlock(Block newBlock, int newPositionX) {
     final maxPositionY = getMaxPositionY(newBlock, newPositionX);
-    if (maxPositionY + newBlock.blockType.blockSize.y >
-        bucketLayoutSize.y - 1) {
+    if (maxPositionY + newBlock.blockType.blockSize.y > bucketLayoutSize.y - 1) {
       return false;
     }
     final newPosition = Position(newPositionX, maxPositionY + 1);
-    print('Type of bucketIntoBlock: ${bucketIntoBlock.runtimeType}');
-
-    bucketIntoBlock.add(
-        {'block': newBlock as dynamic, 'position': newPosition as dynamic});
+    Map<String, Object> newBucketIntoBlock = {'block': newBlock, 'position': newPosition};
+    bucketIntoBlock.add(newBucketIntoBlock);
     return true;
   }
 }
@@ -126,12 +111,12 @@ class Position {
   final int positionY;
   Position(this.positionX, this.positionY);
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> positionToJson() => {
         'positionX': positionX,
         'positionY': positionY,
       };
 
-  factory Position.fromJson(Map<String, dynamic> json) {
+  factory Position.positionFromJson(Map<String, dynamic> json) {
     return Position(json['positionX'], json['positionY']);
   }
 }

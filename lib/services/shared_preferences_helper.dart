@@ -4,13 +4,16 @@ class SharedPreferencesHelper {
   static SharedPreferences? _prefs;
 
   static Future<void> init() async {
+    if (_prefs != null) {
+      return;
+    }
     _prefs = await SharedPreferences.getInstance();
+    print('SharedPreferencesHelper is initialized');
   }
 
   Future<void> saveCurrentBucketId(int bucketId) async {
     if (_prefs == null) {
-      print('SharedPreferencesHelper is not initialized');
-      return;
+      await init();
     }
     await _prefs!.setInt('currentBucketId', bucketId);
     print('saveCurrentBucketId: $bucketId');
@@ -18,10 +21,9 @@ class SharedPreferencesHelper {
 
   Future<int?> loadCurrentBucketId() async {
     if (_prefs == null) {
-      print('SharedPreferencesHelper is not initialized');
-      return null;
+      await init();
     }
-    int? bucketId = _prefs!.getInt('bucketId');
+    int? bucketId = _prefs!.getInt('currentBucketId');
     print('loadCurrentBucketId: $bucketId');
     return bucketId;
   }

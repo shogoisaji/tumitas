@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tumitas/pages/archive_page.dart';
 import 'package:tumitas/pages/play_page.dart';
 import 'package:tumitas/pages/settings_page.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
@@ -42,12 +43,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       'icon': Icons.home,
       'page': PlayPage(),
     },
-    {
-      'icon': Icons.archive,
-      'page': const Center(
-        child: Text('Archive Page'),
-      ),
-    },
+    {'icon': Icons.archive, 'page': ArchivePage()},
     {
       'icon': Icons.settings,
       'page': SettingsPage(),
@@ -68,9 +64,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           onTap: (index) {
             setState(() {
               currentIndex = index;
-              pageController.animateToPage(index,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.ease);
+              pageController.animateToPage(index, duration: const Duration(milliseconds: 400), curve: Curves.ease);
             });
           },
           items: [

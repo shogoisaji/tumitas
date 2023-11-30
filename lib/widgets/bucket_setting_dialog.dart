@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/config/config.dart';
-import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 
 class BucketSettingDialog extends StatefulWidget {
-  final Bucket bucket;
   final Function(Map<String, dynamic>) onSettingBucket;
 
-  const BucketSettingDialog({Key? key, required this.onSettingBucket, required this.bucket}) : super(key: key);
+  const BucketSettingDialog({Key? key, required this.onSettingBucket}) : super(key: key);
 
   @override
   State<BucketSettingDialog> createState() => _BucketSettingDialogState();
@@ -22,9 +20,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.bucket.bucketTitle);
-    _selectedInnerColorIndex = bucketInnerColorList.indexOf(widget.bucket.bucketInnerColor);
-    _selectedOuterColorIndex = bucketOuterColorList.indexOf(widget.bucket.bucketOuterColor);
+    _textController = TextEditingController();
   }
 
   @override

@@ -13,23 +13,19 @@ class Block {
     this.blockType,
   );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> blockToJson() => {
         'color': color.value,
         'title': title,
         'description': description,
-        'blockType': blockType
-            .toString()
-            .split('.')
-            .last, // toString()->"BlockType.block1x1"
+        'blockType': blockType.toString().split('.').last, // toString()->"BlockType.block1x1"
       };
 
-  factory Block.fromJson(Map<String, dynamic> json) {
+  factory Block.blockFromJson(Map<String, dynamic> json) {
     return Block(
       Color(json['color']),
       json['title'],
       json['description'],
-      BlockType.values
-          .firstWhere((e) => e.toString().split('.').last == json['blockType']),
+      BlockType.values.firstWhere((e) => e.toString().split('.').last == json['blockType']),
     );
   }
 }
