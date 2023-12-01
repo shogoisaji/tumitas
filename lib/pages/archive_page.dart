@@ -69,7 +69,7 @@ class _ArchivePageState extends State<ArchivePage> {
                                 ),
                               );
                             },
-                            transitionDuration: const Duration(milliseconds: 300),
+                            transitionDuration: const Duration(milliseconds: 200),
                           ),
                         );
                       },

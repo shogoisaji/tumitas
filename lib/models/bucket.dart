@@ -11,6 +11,8 @@ class Bucket {
   final int bucketLayoutSizeY;
   // final BucketLayoutSize bucketLayoutSize;
   final List<Map<String, dynamic>> bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
+  final DateTime bucketRegisterDate;
+  final DateTime bucketArchiveDate;
 
   Bucket({
     required this.bucketTitle,
@@ -20,6 +22,8 @@ class Bucket {
     required this.bucketLayoutSizeX,
     required this.bucketLayoutSizeY,
     required this.bucketIntoBlock,
+    required this.bucketRegisterDate,
+    required this.bucketArchiveDate,
   });
 
   String jsonEncodeBucketIntoBlock() {

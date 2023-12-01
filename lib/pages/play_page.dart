@@ -5,8 +5,7 @@ import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/services/sqflite_helper.dart';
 import 'package:tumitas/theme/theme.dart';
-import 'package:tumitas/widgets/bucket_registration_dialog.dart';
-import 'package:tumitas/widgets/bucket_setting_dialog.dart';
+import 'package:tumitas/widgets/dialog/bucket_registration_dialog.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
 
@@ -32,20 +31,42 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   //   bucketIntoBlock: [],
   // );
 
-  void _handleSetBucket(Map<String, dynamic> settingBucketProperties) {
+  // change prop of title, innerColor, outerColor
+  void _handleSettingBucket(Map<String, dynamic> settingBucketProperties) {
+    if (currentBucket == null) return;
     final Bucket changeBucket = Bucket(
       bucketTitle: settingBucketProperties['title'],
-      bucketDescription: settingBucketProperties['description'] ?? 'default',
+      bucketDescription: currentBucket!.bucketDescription,
+      bucketInnerColor: settingBucketProperties['innerColor'],
+      bucketOuterColor: settingBucketProperties['outerColor'],
+      bucketLayoutSizeX: bucketLayoutSizeX,
+      bucketLayoutSizeY: bucketLayoutSizeY,
+      bucketIntoBlock: currentBucket!.bucketIntoBlock,
+      bucketRegisterDate: currentBucket!.bucketRegisterDate,
+      bucketArchiveDate: currentBucket!.bucketArchiveDate,
+    );
+    setState(() {
+      currentBucket = changeBucket;
+    });
+    updateCurrentBucket(changeBucket, currentBucketId);
+  }
+
+  void _handleRegisterBucket(Map<String, dynamic> settingBucketProperties) {
+    final Bucket changeBucket = Bucket(
+      bucketTitle: settingBucketProperties['title'],
+      bucketDescription: 'default',
       bucketInnerColor: settingBucketProperties['innerColor'],
       bucketOuterColor: settingBucketProperties['outerColor'],
       bucketLayoutSizeX: bucketLayoutSizeX,
       bucketLayoutSizeY: bucketLayoutSizeY,
       bucketIntoBlock: [],
+      bucketRegisterDate: DateTime.now(),
+      bucketArchiveDate: DateTime(0),
     );
     setState(() {
       currentBucket = changeBucket;
     });
-    // saveCurrentBucket(changeBucket);
+    registerBucket(changeBucket);
   }
 
   void _handleSetBlock(Block block) {
@@ -54,20 +75,59 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     });
   }
 
-  void saveCurrentBucket(Bucket bucket) async {
-    final int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
-    print('savedBucketId: $bucketId');
+  Future<void> _handleAddArchive() async {
+    if (currentBucket == null) return;
+    final Bucket addArchiveBucket = Bucket(
+      bucketTitle: currentBucket!.bucketTitle,
+      bucketDescription: currentBucket!.bucketDescription,
+      bucketInnerColor: currentBucket!.bucketInnerColor,
+      bucketOuterColor: currentBucket!.bucketOuterColor,
+      bucketLayoutSizeX: currentBucket!.bucketLayoutSizeX,
+      bucketLayoutSizeY: currentBucket!.bucketLayoutSizeY,
+      bucketIntoBlock: currentBucket!.bucketIntoBlock,
+      bucketRegisterDate: currentBucket!.bucketRegisterDate,
+      bucketArchiveDate: DateTime.now(),
+    );
+    await updateCurrentBucket(addArchiveBucket, currentBucketId);
+    await SharedPreferencesHelper().saveCurrentBucketId(0);
+    setState(() {
+      currentBucket = null;
+    });
   }
 
-  Future<Bucket?> loadBucket() async {
+  Future<void> registerBucket(Bucket bucket) async {
+    int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
+    await SharedPreferencesHelper().saveCurrentBucketId(bucketId ?? 0);
+    print('insertBucketId: ${bucketId ?? "null"}');
+  }
+
+  Future<void> updateCurrentBucket(Bucket bucket, int bucketId) async {
+    await SqfliteHelper.instance.updateBucket(bucketId, bucket);
+    print('updateBucketId: $bucketId');
+  }
+
+  Future<void> loadBucket() async {
+    currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? 0;
+    print('currentBucketId: $currentBucketId');
     if (currentBucketId != 0) {
       final Bucket? bucket = await SqfliteHelper.instance.findBucketById(currentBucketId);
-      print('loadedBucketId: $currentBucketId');
-      return bucket;
+      setState(() {
+        currentBucket = bucket;
+        print('currentBucketTitle: ${currentBucket != null ? currentBucket!.bucketTitle : 'null'}');
+      });
+    } else {
+      print('No Current Bucket');
     }
-    print('No Current Bucket');
-    return null;
   }
+  // Future<Bucket?> loadBucket() async {
+  //   if (currentBucketId != 0) {
+  //     final Bucket? bucket = await SqfliteHelper.instance.findBucketById(currentBucketId);
+  //     print('loadedBucketId: $currentBucketId');
+  //     return bucket;
+  //   }
+  //   print('No Current Bucket');
+  //   return null;
+  // }
 
   void loadCurrentBucketId() async {
     currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? 0;
@@ -77,7 +137,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   @override
   initState() {
     super.initState();
-    loadCurrentBucketId();
+    loadBucket();
   }
 
   @override
@@ -87,7 +147,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
         SafeArea(
           child: Stack(
             children: [
-              currentBucketId == 0
+              currentBucket == null
                   ? Center(
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -100,20 +160,19 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                 builder: (BuildContext context) => BucketRegistrationDialog(
                                       onRegisterBucket: (Map<String, dynamic> settingBucketProperties) {
                                         setState(() {
-                                          _handleSetBucket(settingBucketProperties);
+                                          _handleRegisterBucket(settingBucketProperties);
                                         });
                                       },
                                     ));
                           },
                           child: Container(
-                            // padding: const EdgeInsets.all(4),
-                            width: 100,
+                            width: 140,
                             height: 60,
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(Icons.account_box, color: Colors.white, size: 28),
-                                Text('Bucket', style: const TextStyle(color: Colors.white, fontSize: 16))
+                                Icon(Icons.add, color: Colors.white, size: 28),
+                                Text('New Bucket', style: TextStyle(color: Colors.white, fontSize: 16))
                               ],
                             ),
                           )),
@@ -124,24 +183,31 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             const SizedBox(height: 24),
-                            FutureBuilder(
-                              future: loadBucket(),
-                              builder: (BuildContext context, AsyncSnapshot<Bucket?> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
-                                } else if (snapshot.hasError) {
-                                  return const Center(child: Text('Error'));
-                                } else if (snapshot.hasData) {
-                                  return PlaySpaceWidget(
-                                    bucket: snapshot.data!,
+                            // FutureBuilder(
+                            //   future: loadBucket(),
+                            //   builder: (BuildContext context, AsyncSnapshot<Bucket?> snapshot) {
+                            //     if (snapshot.connectionState == ConnectionState.waiting) {
+                            //       return const Center(child: CircularProgressIndicator());
+                            //     } else if (snapshot.hasError) {
+                            //       return const Center(child: Text('Error'));
+                            //     } else if (snapshot.hasData) {
+                            //       return PlaySpaceWidget(
+                            //         bucket: snapshot.data!,
+                            //         nextSettingBlock: nextSettingBlock,
+                            //         currentBucketId: currentBucketId,
+                            //       );
+                            //     } else {
+                            //       return const Center(child: Text('No Current Bucket'));
+                            //     }
+                            //   },
+                            // ),
+                            currentBucket != null
+                                ? PlaySpaceWidget(
+                                    bucket: currentBucket!,
                                     nextSettingBlock: nextSettingBlock,
                                     currentBucketId: currentBucketId,
-                                  );
-                                } else {
-                                  return const Center(child: Text('No Current Bucket'));
-                                }
-                              },
-                            ),
+                                  )
+                                : const Center(child: Text('No Current Bucket')),
                           ],
                         ),
                       ),
@@ -172,8 +238,9 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
         ),
         MultiFloatingBottom(
           currentBucket: currentBucket,
-          onSetBucket: _handleSetBucket,
+          onSetBucket: _handleSettingBucket,
           onSetBlock: _handleSetBlock,
+          addArchive: _handleAddArchive,
         ),
       ],
     );

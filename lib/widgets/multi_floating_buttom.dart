@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
-import 'package:tumitas/widgets/block_setting_dialog.dart';
-import 'package:tumitas/widgets/bucket_setting_dialog.dart';
+import 'package:tumitas/widgets/dialog/block_setting_dialog.dart';
+import 'package:tumitas/widgets/dialog/bucket_archive_dialog.dart';
+import 'package:tumitas/widgets/dialog/bucket_setting_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
   final Bucket? currentBucket;
   final Function(Map<String, dynamic>) onSetBucket;
   final Function(Block) onSetBlock;
+  final Function() addArchive;
 
   const MultiFloatingBottom(
-      {super.key, required this.onSetBucket, required this.onSetBlock, required this.currentBucket});
+      {super.key,
+      required this.onSetBucket,
+      required this.onSetBlock,
+      required this.currentBucket,
+      required this.addArchive});
 
   @override
   State<MultiFloatingBottom> createState() => _MultiFloatingBottomState();
@@ -24,6 +30,12 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
   void _handleSetBucket(Map<String, dynamic> settingBucketProperties) {
     setState(() {
       widget.onSetBucket(settingBucketProperties);
+    });
+  }
+
+  void _handleAddArchive() {
+    setState(() {
+      widget.addArchive();
     });
   }
 
@@ -56,7 +68,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
         },
       },
       {
-        'icon': Icons.change_circle,
+        'icon': Icons.settings,
         'title': 'Bucket',
         'onPressed': () {
           setState(() {
@@ -74,6 +86,30 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
                 },
               ),
             );
+          } else {
+            debugPrint('currentBucket is null');
+          }
+        },
+      },
+      {
+        'icon': Icons.archive,
+        'title': 'archive',
+        'onPressed': () {
+          setState(() {
+            isPressed = false;
+          });
+          if (widget.currentBucket != null) {
+            showDialog(
+                context: context,
+                builder: (_) => BucketArchiveDialog(
+                      addArchive: (bool isAddArchive) {
+                        if (isAddArchive) {
+                          setState(() {
+                            _handleAddArchive();
+                          });
+                        }
+                      },
+                    ));
           } else {
             debugPrint('currentBucket is null');
           }
