@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/animations/shake_animation.dart';
-import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/sqflite_helper.dart';
@@ -63,50 +62,51 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
     super.dispose();
   }
 
-  void _setNextBlockPosition() {
-    if (nextBlock == null) return;
-    setState(() {
-      blockCoordinateX = ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
-      if (blockCoordinateX >
-          widget.bucket.bucketLayoutSize.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize) {
-        blockCoordinateX =
-            widget.bucket.bucketLayoutSize.x * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize;
-      }
-    });
-  }
-
   void saveCurrentBucket(Bucket bucket) async {
     final int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
     print('savedBucketId: $bucketId');
   }
 
-  void _onSwipeDown() {
-    if (nextBlock == null) return;
-    final addAvailable = widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
-    if (!addAvailable) {
-      _shakeAnimationController.repeat();
-      Future.delayed(const Duration(milliseconds: 500), () {
-        _shakeAnimationController.reset();
-      });
-      return;
-    }
-    setState(() {
-      nextBlock = null;
-    });
-    _swipeDownAnimationController.forward();
-    SqfliteHelper.instance.updateBucketIntoBlock(widget.currentBucketId, widget.bucket);
-    debugPrint('swipe down');
-  }
-
   @override
   Widget build(BuildContext context) {
-    final double oneBlockSize = (MediaQuery.of(context).size.width - 50) / widget.bucket.bucketLayoutSize.x;
+    final double oneBlockSize = (MediaQuery.of(context).size.width - 50) / widget.bucket.bucketLayoutSizeX;
+
+    void onSwipeDown() {
+      if (nextBlock == null) return;
+      final addAvailable = widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
+      if (!addAvailable) {
+        _shakeAnimationController.repeat();
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _shakeAnimationController.reset();
+        });
+        return;
+      }
+      setState(() {
+        nextBlock = null;
+      });
+      _swipeDownAnimationController.forward();
+      SqfliteHelper.instance.updateBucketIntoBlock(widget.currentBucketId, widget.bucket);
+      debugPrint('swipe down');
+    }
+
+    void setNextBlockPosition() {
+      if (nextBlock == null) return;
+      setState(() {
+        blockCoordinateX = ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
+        if (blockCoordinateX >
+            widget.bucket.bucketLayoutSizeX * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize) {
+          blockCoordinateX =
+              widget.bucket.bucketLayoutSizeX * oneBlockSize - nextBlock!.blockType.blockSize.x * oneBlockSize;
+        }
+      });
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // next block area
         Container(
-          width: oneBlockSize * widget.bucket.bucketLayoutSize.x,
+          width: oneBlockSize * widget.bucket.bucketLayoutSizeX,
           height: oneBlockSize * 2,
           margin: const EdgeInsets.only(bottom: 10),
           child: Stack(
@@ -133,16 +133,16 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                           if (blockCoordinateX < 0) {
                             blockCoordinateX = 0;
                           } else if (blockCoordinateX >
-                              widget.bucket.bucketLayoutSize.x * oneBlockSize -
+                              widget.bucket.bucketLayoutSizeX * oneBlockSize -
                                   nextBlock!.blockType.blockSize.x * oneBlockSize) {
-                            blockCoordinateX = widget.bucket.bucketLayoutSize.x * oneBlockSize -
+                            blockCoordinateX = widget.bucket.bucketLayoutSizeX * oneBlockSize -
                                 nextBlock!.blockType.blockSize.x * oneBlockSize;
                           }
                         },
                       );
                     },
                     onDragEnd: (details) {
-                      _setNextBlockPosition();
+                      setNextBlockPosition();
                     },
                     axis: Axis.horizontal,
                     childWhenDragging: Container(),
@@ -151,7 +151,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                         onVerticalDragUpdate: (details) {
                           if (details.delta.dy > 5) {
                             setState(() {});
-                            _onSwipeDown();
+                            onSwipeDown();
                           }
                         },
                         child: nextBlock != null

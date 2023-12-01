@@ -5,6 +5,7 @@ import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/services/sqflite_helper.dart';
 import 'package:tumitas/theme/theme.dart';
+import 'package:tumitas/widgets/bucket_registration_dialog.dart';
 import 'package:tumitas/widgets/bucket_setting_dialog.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
@@ -20,15 +21,16 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   String nextBlockTitle = '';
   Block? nextSettingBlock;
   int currentBucketId = 0;
+  Bucket? currentBucket;
 
-  Bucket currentBucket = Bucket(
-    bucketTitle: 'default',
-    bucketDescription: 'default',
-    bucketInnerColor: bucketInnerColorList[0],
-    bucketOuterColor: bucketOuterColorList[0],
-    bucketLayoutSize: BucketLayoutSize(5, 7),
-    bucketIntoBlock: [],
-  );
+  // Bucket currentBucket = Bucket(
+  //   bucketTitle: 'default',
+  //   bucketDescription: 'default',
+  //   bucketInnerColor: bucketInnerColorList[0],
+  //   bucketOuterColor: bucketOuterColorList[0],
+  //   bucketLayoutSize: BucketLayoutSize(5, 7),
+  //   bucketIntoBlock: [],
+  // );
 
   void _handleSetBucket(Map<String, dynamic> settingBucketProperties) {
     final Bucket changeBucket = Bucket(
@@ -36,13 +38,14 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
       bucketDescription: settingBucketProperties['description'] ?? 'default',
       bucketInnerColor: settingBucketProperties['innerColor'],
       bucketOuterColor: settingBucketProperties['outerColor'],
-      bucketLayoutSize: currentBucket.bucketLayoutSize,
-      bucketIntoBlock: currentBucket.bucketIntoBlock,
+      bucketLayoutSizeX: bucketLayoutSizeX,
+      bucketLayoutSizeY: bucketLayoutSizeY,
+      bucketIntoBlock: [],
     );
     setState(() {
       currentBucket = changeBucket;
     });
-    saveCurrentBucket(changeBucket);
+    // saveCurrentBucket(changeBucket);
   }
 
   void _handleSetBlock(Block block) {
@@ -59,8 +62,10 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   Future<Bucket?> loadBucket() async {
     if (currentBucketId != 0) {
       final Bucket? bucket = await SqfliteHelper.instance.findBucketById(currentBucketId);
+      print('loadedBucketId: $currentBucketId');
       return bucket;
     }
+    print('No Current Bucket');
     return null;
   }
 
@@ -92,8 +97,8 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                           onPressed: () {
                             showDialog(
                                 context: context,
-                                builder: (BuildContext context) => BucketSettingDialog(
-                                      onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
+                                builder: (BuildContext context) => BucketRegistrationDialog(
+                                      onRegisterBucket: (Map<String, dynamic> settingBucketProperties) {
                                         setState(() {
                                           _handleSetBucket(settingBucketProperties);
                                         });

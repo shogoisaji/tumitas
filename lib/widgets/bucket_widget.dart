@@ -17,8 +17,8 @@ class BucketWidget extends StatelessWidget {
       children: [
         Container(
           alignment: Alignment.bottomCenter,
-          width: bucket.bucketLayoutSize.x * oneBlockSize + bucketThickness * 2 + innerOffset * 2,
-          height: bucket.bucketLayoutSize.y * oneBlockSize + bucketThickness * 2,
+          width: bucket.bucketLayoutSizeX * oneBlockSize + bucketThickness * 2 + innerOffset * 2,
+          height: bucket.bucketLayoutSizeY * oneBlockSize + bucketThickness * 2,
           padding: const EdgeInsets.only(bottom: bucketThickness),
           margin: const EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
@@ -29,8 +29,8 @@ class BucketWidget extends StatelessWidget {
             ),
           ),
           child: Container(
-            width: bucket.bucketLayoutSize.x * oneBlockSize + innerOffset * 2,
-            height: bucket.bucketLayoutSize.y * oneBlockSize + bucketThickness * 2,
+            width: bucket.bucketLayoutSizeX * oneBlockSize + innerOffset * 2,
+            height: bucket.bucketLayoutSizeY * oneBlockSize + bucketThickness * 2,
             padding: const EdgeInsets.only(left: innerOffset, right: innerOffset, bottom: innerOffset),
             decoration: BoxDecoration(
               color: bucket.bucketInnerColor,

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/theme/theme.dart';
 
-double oneBlockSize = 70.0;
+// bucket layout size
+const int bucketLayoutSizeX = 5;
+const int bucketLayoutSizeY = 7;
+
+// double oneBlockSize = 70.0;
 List<Color> blockColorList = [
   MyTheme.fieryRed,
   MyTheme.sunsetOrange,

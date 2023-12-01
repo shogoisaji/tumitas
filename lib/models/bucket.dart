@@ -7,7 +7,9 @@ class Bucket {
   final String bucketDescription;
   final Color bucketInnerColor;
   final Color bucketOuterColor;
-  final BucketLayoutSize bucketLayoutSize;
+  final int bucketLayoutSizeX;
+  final int bucketLayoutSizeY;
+  // final BucketLayoutSize bucketLayoutSize;
   final List<Map<String, dynamic>> bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
 
   Bucket({
@@ -15,7 +17,8 @@ class Bucket {
     required this.bucketDescription,
     required this.bucketInnerColor,
     required this.bucketOuterColor,
-    required this.bucketLayoutSize,
+    required this.bucketLayoutSizeX,
+    required this.bucketLayoutSizeY,
     required this.bucketIntoBlock,
   });
 
@@ -95,7 +98,7 @@ class Bucket {
 
   bool addNewBlock(Block newBlock, int newPositionX) {
     final maxPositionY = getMaxPositionY(newBlock, newPositionX);
-    if (maxPositionY + newBlock.blockType.blockSize.y > bucketLayoutSize.y - 1) {
+    if (maxPositionY + newBlock.blockType.blockSize.y > bucketLayoutSizeY - 1) {
       return false;
     }
     final newPosition = Position(newPositionX, maxPositionY + 1);
@@ -121,18 +124,18 @@ class Position {
   }
 }
 
-class BucketLayoutSize {
-  final int x;
-  final int y;
-  BucketLayoutSize(this.x, this.y);
+// class BucketLayoutSize {
+//   final int x;
+//   final int y;
+//   BucketLayoutSize(this.x, this.y);
 
-  Map<String, dynamic> toJson() => {
-        'x': x,
-        'y': y,
-      };
+//   Map<String, dynamic> toJson() => {
+//         'x': x,
+//         'y': y,
+//       };
 
-  factory BucketLayoutSize.fromJson(String jsonString) {
-    final Map<String, dynamic> json = jsonDecode(jsonString);
-    return BucketLayoutSize(json['x'], json['y']);
-  }
-}
+//   factory BucketLayoutSize.fromJson(String jsonString) {
+//     final Map<String, dynamic> json = jsonDecode(jsonString);
+//     return BucketLayoutSize(json['x'], json['y']);
+//   }
+// }

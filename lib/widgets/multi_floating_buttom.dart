@@ -3,9 +3,10 @@ import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 import 'package:tumitas/widgets/block_setting_dialog.dart';
+import 'package:tumitas/widgets/bucket_setting_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
-  final Bucket currentBucket;
+  final Bucket? currentBucket;
   final Function(Map<String, dynamic>) onSetBucket;
   final Function(Block) onSetBlock;
 
@@ -61,18 +62,21 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
           setState(() {
             isPressed = false;
           });
-          // showDialog(
-          //   context: context,
-          //   builder: (_) =>
-          // BucketSettingDialog(
-          //   bucket: widget.currentBucket,
-          //   onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
-          //     setState(() {
-          //       _handleSetBucket(settingBucketProperties);
-          //     });
-          //   },
-          // ),
-          // );
+          if (widget.currentBucket != null) {
+            showDialog(
+              context: context,
+              builder: (_) => BucketSettingDialog(
+                currentBucket: widget.currentBucket!,
+                onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
+                  setState(() {
+                    _handleSetBucket(settingBucketProperties);
+                  });
+                },
+              ),
+            );
+          } else {
+            debugPrint('currentBucket is null');
+          }
         },
       },
       // {

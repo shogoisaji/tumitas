@@ -57,8 +57,8 @@ class SqfliteHelper {
       columnBucketDescription: bucket.bucketDescription,
       columnBucketInnerColor: bucket.bucketInnerColor.value,
       columnBucketOuterColor: bucket.bucketOuterColor.value,
-      columnBucketLayoutSizeX: bucket.bucketLayoutSize.x,
-      columnBucketLayoutSizeY: bucket.bucketLayoutSize.y,
+      columnBucketLayoutSizeX: bucket.bucketLayoutSizeX,
+      columnBucketLayoutSizeY: bucket.bucketLayoutSizeY,
       columnBucketIntoBlock: bucket.jsonEncodeBucketIntoBlock(),
     };
     final id = await db.insert(bucketTable, row);
@@ -99,10 +99,8 @@ class SqfliteHelper {
       bucketDescription: map[columnBucketDescription] ?? '',
       bucketInnerColor: Color(map[columnBucketInnerColor]),
       bucketOuterColor: Color(map[columnBucketOuterColor]),
-      bucketLayoutSize: BucketLayoutSize(
-        map[columnBucketLayoutSizeX],
-        map[columnBucketLayoutSizeY],
-      ),
+      bucketLayoutSizeX: map[columnBucketLayoutSizeX],
+      bucketLayoutSizeY: map[columnBucketLayoutSizeY],
       bucketIntoBlock: Bucket.jsonDecodeBucketIntoBlock(json.decode(map[columnBucketIntoBlock])),
     );
     return bucket;

@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tumitas/config/config.dart';
-import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 
-class BucketSettingDialog extends StatefulWidget {
-  final Bucket currentBucket;
-  final Function(Map<String, dynamic>) onSettingBucket;
+class BucketRegistrationDialog extends StatefulWidget {
+  final Function(Map<String, dynamic>) onRegisterBucket;
 
-  const BucketSettingDialog({Key? key, required this.onSettingBucket, required this.currentBucket}) : super(key: key);
+  const BucketRegistrationDialog({Key? key, required this.onRegisterBucket}) : super(key: key);
 
   @override
-  State<BucketSettingDialog> createState() => _BucketSettingDialogState();
+  State<BucketRegistrationDialog> createState() => _BucketRegistrationDialogState();
 }
 
-class _BucketSettingDialogState extends State<BucketSettingDialog> {
+class _BucketRegistrationDialogState extends State<BucketRegistrationDialog> {
   late TextEditingController _textController;
   final Color contentFillColor = MyTheme.grey3;
   int _selectedInnerColorIndex = 0;
@@ -22,15 +20,13 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.currentBucket.bucketTitle);
-    _selectedInnerColorIndex = bucketInnerColorList.indexOf(widget.currentBucket.bucketInnerColor);
-    _selectedOuterColorIndex = bucketOuterColorList.indexOf(widget.currentBucket.bucketOuterColor);
+    _textController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Bucket Settings',
+      title: const Text('Bucket Registration',
           style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 32)),
       backgroundColor: MyTheme.green5,
       content: SingleChildScrollView(
@@ -204,7 +200,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
               'innerColor': bucketInnerColorList[_selectedInnerColorIndex],
               'outerColor': bucketOuterColorList[_selectedOuterColorIndex],
             };
-            widget.onSettingBucket(settingBucketProperties);
+            widget.onRegisterBucket(settingBucketProperties);
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
