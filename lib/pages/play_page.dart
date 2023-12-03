@@ -5,7 +5,7 @@ import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/services/sqflite_helper.dart';
 import 'package:tumitas/theme/theme.dart';
-import 'package:tumitas/widgets/dialog/bucket_registration_dialog.dart';
+import 'package:tumitas/widgets/bucket_registration_bottom_sheet.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
 
@@ -98,11 +98,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     }
   }
 
-  // void loadCurrentBucketId() async {
-  //   currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? 0;
-  //   setState(() {});
-  // }
-
   @override
   initState() {
     super.initState();
@@ -124,9 +119,10 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                             backgroundColor: MyTheme.green1,
                           ),
                           onPressed: () {
-                            showDialog(
+                            showModalBottomSheet(
                                 context: context,
-                                builder: (BuildContext context) => BucketRegistrationDialog(
+                                isScrollControlled: true,
+                                builder: (BuildContext context) => BucketRegistrationBottomSheet(
                                       onRegisterBucket: (Map<String, dynamic> settingBucketProperties) {
                                         setState(() {
                                           _handleRegisterBucket(settingBucketProperties);
@@ -134,10 +130,10 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                       },
                                     ));
                           },
-                          child: Container(
+                          child: const SizedBox(
                             width: 140,
                             height: 60,
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Icon(Icons.add, color: Colors.white, size: 28),
@@ -152,24 +148,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             const SizedBox(height: 24),
-                            // FutureBuilder(
-                            //   future: loadBucket(),
-                            //   builder: (BuildContext context, AsyncSnapshot<Bucket?> snapshot) {
-                            //     if (snapshot.connectionState == ConnectionState.waiting) {
-                            //       return const Center(child: CircularProgressIndicator());
-                            //     } else if (snapshot.hasError) {
-                            //       return const Center(child: Text('Error'));
-                            //     } else if (snapshot.hasData) {
-                            //       return PlaySpaceWidget(
-                            //         bucket: snapshot.data!,
-                            //         nextSettingBlock: nextSettingBlock,
-                            //         currentBucketId: currentBucketId,
-                            //       );
-                            //     } else {
-                            //       return const Center(child: Text('No Current Bucket'));
-                            //     }
-                            //   },
-                            // ),
                             currentBucket != null
                                 ? PlaySpaceWidget(
                                     bucket: currentBucket!,
