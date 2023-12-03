@@ -6,7 +6,7 @@ class MyTheme {
   static const Color green3 = Color(0xff07ff1b);
   static const Color green4 = Color(0xff6aff90);
   static const Color green5 = Color(0xffc0ff9f);
-  static const Color grey1 = Color(0xff7c9d9d);
+  static const Color grey1 = Color(0xff4a5e59);
   static const Color grey2 = Color(0xffc7e2eb);
   static const Color grey3 = Color(0xffe5ffeb);
   static const Color blue1 = Color(0xff4040ff);

@@ -17,6 +17,25 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
   final Color contentFillColor = MyTheme.grey3;
   BlockType _selectedBlockType = BlockType.block1x1;
   int _selectedColorIndex = 0;
+  FocusNode focusNode = FocusNode();
+  bool isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +62,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
                   fillColor: contentFillColor,
                   filled: true,
                 ),
-                maxLines: 2,
+                maxLines: 1,
               ),
               Container(
                   decoration: BoxDecoration(
@@ -78,6 +97,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
                                     onTap: () {
                                       setState(() {
                                         _selectedBlockType = BlockType.values[i];
+                                        FocusScope.of(context).unfocus();
                                       });
                                     },
                                     child: Align(
@@ -133,6 +153,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
                           onTap: () {
                             setState(() {
                               _selectedColorIndex = index;
+                              FocusScope.of(context).unfocus();
                             });
                           },
                           child: Container(
@@ -156,7 +177,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
         ElevatedButton(
           onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -170,7 +191,7 @@ class _BlockSettingDialogState extends State<BlockSettingDialog> {
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),

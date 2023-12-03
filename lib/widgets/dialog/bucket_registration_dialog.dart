@@ -17,17 +17,32 @@ class _BucketRegistrationDialogState extends State<BucketRegistrationDialog> {
   int _selectedInnerColorIndex = 0;
   int _selectedOuterColorIndex = 0;
 
+  FocusNode focusNode = FocusNode();
+  bool isFocused = false;
+
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController();
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    focusNode.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Bucket Registration',
-          style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 32)),
+          style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 28)),
       backgroundColor: MyTheme.green5,
       content: SingleChildScrollView(
         child: Container(
@@ -91,6 +106,7 @@ class _BucketRegistrationDialogState extends State<BucketRegistrationDialog> {
                                         onTap: () {
                                           setState(() {
                                             _selectedInnerColorIndex = i;
+                                            FocusScope.of(context).unfocus();
                                           });
                                         },
                                         child: Align(
@@ -155,6 +171,7 @@ class _BucketRegistrationDialogState extends State<BucketRegistrationDialog> {
                                         onTap: () {
                                           setState(() {
                                             _selectedOuterColorIndex = i;
+                                            FocusScope.of(context).unfocus();
                                           });
                                         },
                                         child: Align(
@@ -185,7 +202,7 @@ class _BucketRegistrationDialogState extends State<BucketRegistrationDialog> {
         ElevatedButton(
           onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -204,7 +221,7 @@ class _BucketRegistrationDialogState extends State<BucketRegistrationDialog> {
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),

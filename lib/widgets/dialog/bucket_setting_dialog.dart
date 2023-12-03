@@ -18,6 +18,8 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
   final Color contentFillColor = MyTheme.grey3;
   int _selectedInnerColorIndex = 0;
   int _selectedOuterColorIndex = 0;
+  FocusNode focusNode = FocusNode();
+  bool isFocused = false;
 
   @override
   void initState() {
@@ -25,6 +27,18 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
     _textController = TextEditingController(text: widget.currentBucket.bucketTitle);
     _selectedInnerColorIndex = bucketInnerColorList.indexOf(widget.currentBucket.bucketInnerColor);
     _selectedOuterColorIndex = bucketOuterColorList.indexOf(widget.currentBucket.bucketOuterColor);
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -95,6 +109,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
                                         onTap: () {
                                           setState(() {
                                             _selectedInnerColorIndex = i;
+                                            FocusScope.of(context).unfocus();
                                           });
                                         },
                                         child: Align(
@@ -159,6 +174,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
                                         onTap: () {
                                           setState(() {
                                             _selectedOuterColorIndex = i;
+                                            FocusScope.of(context).unfocus();
                                           });
                                         },
                                         child: Align(
@@ -189,7 +205,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
         ElevatedButton(
           onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -208,7 +224,7 @@ class _BucketSettingDialogState extends State<BucketSettingDialog> {
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),

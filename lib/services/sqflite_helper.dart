@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:tumitas/models/bucket.dart';
 
 class SqfliteHelper {
-  static const _databaseName = "sqflite4_Database.db";
+  static const _databaseName = "sqflite6_Database.db";
   static const _databaseVersion = 1;
 
   static const bucketTable = 'bucketTable';
@@ -48,7 +48,7 @@ class SqfliteHelper {
             $columnBucketLayoutSizeY INTEGER NOT NULL,
             $columnBucketIntoBlock TEXT,
             $columnBucketRegisterDate TEXT NOT NULL,
-            $columnBucketArchiveDate TEXT NOT NULL
+            $columnBucketArchiveDate TEXT
           )
           ''');
   }
@@ -65,21 +65,22 @@ class SqfliteHelper {
       columnBucketLayoutSizeY: bucket.bucketLayoutSizeY,
       columnBucketIntoBlock: bucket.jsonEncodeBucketIntoBlock(),
       columnBucketRegisterDate: bucket.bucketRegisterDate.toIso8601String(),
-      columnBucketArchiveDate: bucket.bucketArchiveDate.toIso8601String(),
+      // columnBucketArchiveDate: bucket.bucketArchiveDate.toIso8601String(),
     };
     final id = await db.insert(bucketTable, row);
     print('挿入された行のid: $id');
     print(
-        '挿入されたデータ: ${row[columnBucketTitle]}, ${row[columnBucketDescription]}, ${row[columnBucketInnerColor]}, ${row[columnBucketOuterColor]}, ${row[columnBucketLayoutSizeX]}:${row[columnBucketLayoutSizeY]}, ${row[columnBucketIntoBlock]}, ${row[columnBucketRegisterDate]}, ${row[columnBucketArchiveDate]}');
+        '挿入されたデータ: ${row[columnBucketTitle]}, ${row[columnBucketDescription]}, ${row[columnBucketInnerColor]}, ${row[columnBucketOuterColor]}, ${row[columnBucketLayoutSizeX]}:${row[columnBucketLayoutSizeY]}, ${row[columnBucketIntoBlock]}, ${row[columnBucketRegisterDate]}');
     return id;
   }
 
-// get database all rows
-  Future<List<Bucket>> queryAllBucket() async {
+  Future<List<Bucket>> fetchArchiveBucket() async {
     Database db = await instance.database;
     List<Map<String, dynamic>>? allBucket = await db.query(bucketTable, orderBy: '$columnBucketRegisterDate DESC');
+    print('fetchArchiveBucket: length ${allBucket.length}');
     if (allBucket == []) return [];
-    final List<Bucket> bucketList = allBucket.map((e) => mapToBucket(e)).toList();
+    final List<Bucket> bucketList =
+        allBucket.where((e) => e[columnBucketArchiveDate] != null).map((e) => mapToBucket(e)).toList();
     return bucketList;
   }
 
@@ -108,8 +109,8 @@ class SqfliteHelper {
       bucketLayoutSizeX: map[columnBucketLayoutSizeX],
       bucketLayoutSizeY: map[columnBucketLayoutSizeY],
       bucketIntoBlock: Bucket.jsonDecodeBucketIntoBlock(json.decode(map[columnBucketIntoBlock])),
-      bucketRegisterDate: DateTime.now(),
-      bucketArchiveDate: DateTime.now(),
+      bucketRegisterDate: DateTime.parse(map[columnBucketRegisterDate]),
+      bucketArchiveDate: map[columnBucketArchiveDate] != null ? DateTime.parse(map[columnBucketArchiveDate]) : null,
     );
     return bucket;
   }
@@ -140,6 +141,8 @@ class SqfliteHelper {
         columnBucketLayoutSizeX: bucket.bucketLayoutSizeX,
         columnBucketLayoutSizeY: bucket.bucketLayoutSizeY,
         columnBucketIntoBlock: bucket.jsonEncodeBucketIntoBlock(),
+        columnBucketRegisterDate: bucket.bucketRegisterDate.toIso8601String(),
+        columnBucketArchiveDate: bucket.bucketArchiveDate?.toIso8601String(),
       },
       where: '$columnBucketId = ?',
       whereArgs: [id],

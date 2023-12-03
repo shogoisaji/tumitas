@@ -12,7 +12,7 @@ class Bucket {
   // final BucketLayoutSize bucketLayoutSize;
   final List<Map<String, dynamic>> bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
   final DateTime bucketRegisterDate;
-  final DateTime bucketArchiveDate;
+  final DateTime? bucketArchiveDate;
 
   Bucket({
     required this.bucketTitle,
@@ -23,8 +23,36 @@ class Bucket {
     required this.bucketLayoutSizeY,
     required this.bucketIntoBlock,
     required this.bucketRegisterDate,
-    required this.bucketArchiveDate,
+    this.bucketArchiveDate,
   });
+
+  Bucket settingBucket(String title, Color innerColor, Color outerColor) {
+    return Bucket(
+      bucketTitle: title,
+      bucketDescription: bucketDescription, // no change
+      bucketInnerColor: innerColor,
+      bucketOuterColor: outerColor,
+      bucketLayoutSizeX: bucketLayoutSizeX, // no change
+      bucketLayoutSizeY: bucketLayoutSizeY, // no change
+      bucketIntoBlock: bucketIntoBlock, // no change
+      bucketRegisterDate: bucketRegisterDate, // no change
+      bucketArchiveDate: bucketArchiveDate, // no change
+    );
+  }
+
+  Bucket updateArchiveDate(DateTime archiveDate) {
+    return Bucket(
+      bucketTitle: bucketTitle, // no change
+      bucketDescription: bucketDescription, // no change
+      bucketInnerColor: bucketInnerColor, // no change
+      bucketOuterColor: bucketOuterColor, // no change
+      bucketLayoutSizeX: bucketLayoutSizeX, // no change
+      bucketLayoutSizeY: bucketLayoutSizeY, // no change
+      bucketIntoBlock: bucketIntoBlock, // no change
+      bucketRegisterDate: bucketRegisterDate, // no change
+      bucketArchiveDate: archiveDate,
+    );
+  }
 
   String jsonEncodeBucketIntoBlock() {
     List<String> encodedBucketIntoBlock = [];

@@ -12,6 +12,7 @@ class BucketWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     const double bucketThickness = 5;
     const double innerOffset = 1;
+    final double borderRadius = oneBlockSize / 7;
 
     return Column(
       children: [
@@ -23,9 +24,9 @@ class BucketWidget extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
             color: bucket.bucketOuterColor,
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(10 + bucketThickness),
-              bottomRight: Radius.circular(10 + bucketThickness),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(borderRadius + bucketThickness),
+              bottomRight: Radius.circular(borderRadius + bucketThickness),
             ),
           ),
           child: Container(
@@ -34,9 +35,9 @@ class BucketWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: innerOffset, right: innerOffset, bottom: innerOffset),
             decoration: BoxDecoration(
               color: bucket.bucketInnerColor,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(borderRadius),
+                bottomRight: Radius.circular(borderRadius),
               ),
             ),
             child: Stack(children: [

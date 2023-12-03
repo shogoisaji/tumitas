@@ -17,41 +17,24 @@ class PlayPage extends StatefulWidget {
 }
 
 class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
-  String nextBlockTitle = '';
-  Block? nextSettingBlock;
-  int currentBucketId = 0;
+  Block? nextPlayBlock;
   Bucket? currentBucket;
+  int currentBucketId = 0;
 
-  // Bucket currentBucket = Bucket(
-  //   bucketTitle: 'default',
-  //   bucketDescription: 'default',
-  //   bucketInnerColor: bucketInnerColorList[0],
-  //   bucketOuterColor: bucketOuterColorList[0],
-  //   bucketLayoutSize: BucketLayoutSize(5, 7),
-  //   bucketIntoBlock: [],
-  // );
-
-  // change prop of title, innerColor, outerColor
   void _handleSettingBucket(Map<String, dynamic> settingBucketProperties) {
     if (currentBucket == null) return;
-    final Bucket changeBucket = Bucket(
-      bucketTitle: settingBucketProperties['title'],
-      bucketDescription: currentBucket!.bucketDescription,
-      bucketInnerColor: settingBucketProperties['innerColor'],
-      bucketOuterColor: settingBucketProperties['outerColor'],
-      bucketLayoutSizeX: bucketLayoutSizeX,
-      bucketLayoutSizeY: bucketLayoutSizeY,
-      bucketIntoBlock: currentBucket!.bucketIntoBlock,
-      bucketRegisterDate: currentBucket!.bucketRegisterDate,
-      bucketArchiveDate: currentBucket!.bucketArchiveDate,
+    final Bucket changeBucket = currentBucket!.settingBucket(
+      settingBucketProperties['title'],
+      settingBucketProperties['innerColor'],
+      settingBucketProperties['outerColor'],
     );
     setState(() {
       currentBucket = changeBucket;
     });
-    updateCurrentBucket(changeBucket, currentBucketId);
+    updateCurrentBucket(currentBucketId, changeBucket);
   }
 
-  void _handleRegisterBucket(Map<String, dynamic> settingBucketProperties) {
+  void _handleRegisterBucket(Map<String, dynamic> settingBucketProperties) async {
     final Bucket changeBucket = Bucket(
       bucketTitle: settingBucketProperties['title'],
       bucketDescription: 'default',
@@ -61,47 +44,42 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
       bucketLayoutSizeY: bucketLayoutSizeY,
       bucketIntoBlock: [],
       bucketRegisterDate: DateTime.now(),
-      bucketArchiveDate: DateTime(0),
+      bucketArchiveDate: null,
     );
+    final int bucketId = await registerBucket(changeBucket) ?? 0;
     setState(() {
       currentBucket = changeBucket;
+      currentBucketId = bucketId;
     });
-    registerBucket(changeBucket);
   }
 
   void _handleSetBlock(Block block) {
     setState(() {
-      nextSettingBlock = block;
+      nextPlayBlock = block;
     });
   }
 
   Future<void> _handleAddArchive() async {
     if (currentBucket == null) return;
-    final Bucket addArchiveBucket = Bucket(
-      bucketTitle: currentBucket!.bucketTitle,
-      bucketDescription: currentBucket!.bucketDescription,
-      bucketInnerColor: currentBucket!.bucketInnerColor,
-      bucketOuterColor: currentBucket!.bucketOuterColor,
-      bucketLayoutSizeX: currentBucket!.bucketLayoutSizeX,
-      bucketLayoutSizeY: currentBucket!.bucketLayoutSizeY,
-      bucketIntoBlock: currentBucket!.bucketIntoBlock,
-      bucketRegisterDate: currentBucket!.bucketRegisterDate,
-      bucketArchiveDate: DateTime.now(),
-    );
-    await updateCurrentBucket(addArchiveBucket, currentBucketId);
+    final Bucket addArchiveBucket = currentBucket!.updateArchiveDate(DateTime.now());
+    print('bbb ${currentBucketId}');
+
+    await updateCurrentBucket(currentBucketId, addArchiveBucket);
     await SharedPreferencesHelper().saveCurrentBucketId(0);
     setState(() {
       currentBucket = null;
+      nextPlayBlock = null;
     });
   }
 
-  Future<void> registerBucket(Bucket bucket) async {
+  Future<int?> registerBucket(Bucket bucket) async {
     int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
     await SharedPreferencesHelper().saveCurrentBucketId(bucketId ?? 0);
     print('insertBucketId: ${bucketId ?? "null"}');
+    return bucketId;
   }
 
-  Future<void> updateCurrentBucket(Bucket bucket, int bucketId) async {
+  Future<void> updateCurrentBucket(int bucketId, Bucket bucket) async {
     await SqfliteHelper.instance.updateBucket(bucketId, bucket);
     print('updateBucketId: $bucketId');
   }
@@ -119,20 +97,11 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
       print('No Current Bucket');
     }
   }
-  // Future<Bucket?> loadBucket() async {
-  //   if (currentBucketId != 0) {
-  //     final Bucket? bucket = await SqfliteHelper.instance.findBucketById(currentBucketId);
-  //     print('loadedBucketId: $currentBucketId');
-  //     return bucket;
-  //   }
-  //   print('No Current Bucket');
-  //   return null;
-  // }
 
-  void loadCurrentBucketId() async {
-    currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? 0;
-    setState(() {});
-  }
+  // void loadCurrentBucketId() async {
+  //   currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? 0;
+  //   setState(() {});
+  // }
 
   @override
   initState() {
@@ -204,7 +173,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                             currentBucket != null
                                 ? PlaySpaceWidget(
                                     bucket: currentBucket!,
-                                    nextSettingBlock: nextSettingBlock,
+                                    nextSettingBlock: nextPlayBlock,
                                     currentBucketId: currentBucketId,
                                   )
                                 : const Center(child: Text('No Current Bucket')),
@@ -212,36 +181,17 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-              Positioned(
-                top: 10,
-                left: 10,
-                child: ElevatedButton(
-                  onPressed: () {
-                    SharedPreferencesHelper().saveCurrentBucketId(1);
-                    setState(() {});
-                  },
-                  child: const Text('save'),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    setState(() {});
-                  },
-                  child: const Text('load'),
-                ),
-              ),
             ],
           ),
         ),
-        MultiFloatingBottom(
-          currentBucket: currentBucket,
-          onSetBucket: _handleSettingBucket,
-          onSetBlock: _handleSetBlock,
-          addArchive: _handleAddArchive,
-        ),
+        currentBucket != null
+            ? MultiFloatingBottom(
+                currentBucket: currentBucket,
+                onSetBucket: _handleSettingBucket,
+                onSetBlock: _handleSetBlock,
+                addArchive: _handleAddArchive,
+              )
+            : Container(),
       ],
     );
   }

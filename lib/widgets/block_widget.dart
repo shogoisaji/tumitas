@@ -13,9 +13,7 @@ class BlockWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int titleMaxLine() {
-      return block.blockType.blockSize.y * 2;
-    }
+    final borderRadius = oneBlockSize / 7;
 
     return Container(
         width: block.blockType.blockSize.x * oneBlockSize,
@@ -25,7 +23,7 @@ class BlockWidget extends StatelessWidget {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: block.color,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(borderRadius),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withOpacity(0.2),
@@ -44,7 +42,7 @@ class BlockWidget extends StatelessWidget {
                     color: Colors.black,
                   ),
                   overflow: TextOverflow.ellipsis,
-                  maxLines: titleMaxLine(),
+                  maxLines: block.blockType.blockSize.y * 2,
                 ))
               : Container(),
         ));

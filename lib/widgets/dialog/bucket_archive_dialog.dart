@@ -21,13 +21,13 @@ class _BucketArchiveDialogState extends State<BucketArchiveDialog> {
       backgroundColor: MyTheme.green5,
       content: const Text(
         'このバケットをアーカイブに追加しますか?',
-        style: TextStyle(color: MyTheme.grey1, fontSize: 20),
+        style: TextStyle(color: Colors.black, fontSize: 20),
       ),
       actions: [
         ElevatedButton(
           onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
@@ -41,7 +41,7 @@ class _BucketArchiveDialogState extends State<BucketArchiveDialog> {
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(bottom: 2, left: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
