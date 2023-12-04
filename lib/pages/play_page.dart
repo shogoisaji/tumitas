@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:tumitas/animations/cloud_animation.dart';
 import 'package:tumitas/config/config.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/services/sqflite_helper.dart';
 import 'package:tumitas/theme/theme.dart';
-import 'package:tumitas/widgets/bucket_registration_bottom_sheet.dart';
+import 'package:tumitas/widgets/bottom_sheet/bucket_registration_bottom_sheet.dart';
 import 'package:tumitas/widgets/multi_floating_buttom.dart';
 import 'package:tumitas/widgets/play_space_widget.dart';
+import 'package:uuid/uuid.dart';
 
 class PlayPage extends StatefulWidget {
   const PlayPage({super.key});
@@ -19,7 +21,7 @@ class PlayPage extends StatefulWidget {
 class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   Block? nextPlayBlock;
   Bucket? currentBucket;
-  int currentBucketId = 0;
+  String currentBucketId = '';
 
   void _handleSettingBucket(Map<String, dynamic> settingBucketProperties) {
     if (currentBucket == null) return;
@@ -36,6 +38,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
 
   void _handleRegisterBucket(Map<String, dynamic> settingBucketProperties) async {
     final Bucket changeBucket = Bucket(
+      bucketId: const Uuid().v4(),
       bucketTitle: settingBucketProperties['title'],
       bucketDescription: 'default',
       bucketInnerColor: settingBucketProperties['innerColor'],
@@ -46,11 +49,8 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
       bucketRegisterDate: DateTime.now(),
       bucketArchiveDate: null,
     );
-    final int bucketId = await registerBucket(changeBucket) ?? 0;
-    setState(() {
-      currentBucket = changeBucket;
-      currentBucketId = bucketId;
-    });
+    await registerBucket(changeBucket);
+    loadBucket();
   }
 
   void _handleSetBlock(Block block) {
@@ -65,30 +65,33 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
     print('bbb ${currentBucketId}');
 
     await updateCurrentBucket(currentBucketId, addArchiveBucket);
-    await SharedPreferencesHelper().saveCurrentBucketId(0);
+    await SharedPreferencesHelper().saveCurrentBucketId('');
     setState(() {
       currentBucket = null;
       nextPlayBlock = null;
     });
   }
 
-  Future<int?> registerBucket(Bucket bucket) async {
-    int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
-    await SharedPreferencesHelper().saveCurrentBucketId(bucketId ?? 0);
-    print('insertBucketId: ${bucketId ?? "null"}');
-    return bucketId;
+  Future<void> registerBucket(Bucket bucket) async {
+    await SqfliteHelper.instance.insertBucket(bucket);
+    await SharedPreferencesHelper().saveCurrentBucketId(bucket.bucketId);
+    print('insertBucketId: ${bucket.bucketId}');
   }
 
-  Future<void> updateCurrentBucket(int bucketId, Bucket bucket) async {
+  Future<void> updateCurrentBucket(String bucketId, Bucket bucket) async {
     await SqfliteHelper.instance.updateBucket(bucketId, bucket);
     print('updateBucketId: $bucketId');
   }
 
   Future<void> loadBucket() async {
-    currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? 0;
+    currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? '';
     print('currentBucketId: $currentBucketId');
-    if (currentBucketId != 0) {
+    if (currentBucketId != '') {
       final Bucket? bucket = await SqfliteHelper.instance.findBucketById(currentBucketId);
+      if (bucket == null) {
+        print('No Current Bucket');
+        return;
+      }
       setState(() {
         currentBucket = bucket;
         print('currentBucketTitle: ${currentBucket != null ? currentBucket!.bucketTitle : 'null'}');
@@ -111,6 +114,62 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
         SafeArea(
           child: Stack(
             children: [
+              CloudAnimation(
+                duration: 9,
+                child: Transform.translate(
+                  offset: const Offset(80, 30),
+                  child: Image.asset(
+                    'assets/images/cloud3.png',
+                    fit: BoxFit.cover,
+                    width: 90,
+                  ),
+                ),
+              ),
+              CloudAnimation(
+                duration: 11,
+                child: Transform.translate(
+                  offset: const Offset(10, 60),
+                  child: Image.asset(
+                    'assets/images/cloud1.png',
+                    fit: BoxFit.cover,
+                    width: 120,
+                  ),
+                ),
+              ),
+              CloudAnimation(
+                duration: 13,
+                child: Transform.translate(
+                  offset: const Offset(220, 40),
+                  child: Image.asset(
+                    'assets/images/cloud2.png',
+                    fit: BoxFit.cover,
+                    width: 120,
+                  ),
+                ),
+              ),
+              CloudAnimation(
+                duration: 10,
+                child: Transform.translate(
+                  offset: const Offset(150, 80),
+                  child: Image.asset(
+                    'assets/images/cloud4.png',
+                    fit: BoxFit.cover,
+                    width: 120,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 10,
+                top: 5,
+                child: Transform.rotate(
+                  angle: -0.15,
+                  child: Image.asset(
+                    'assets/images/title_logo.png',
+                    fit: BoxFit.cover,
+                    width: 200,
+                  ),
+                ),
+              ),
               currentBucket == null
                   ? Center(
                       child: ElevatedButton(

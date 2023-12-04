@@ -11,7 +11,7 @@ class BucketArchiveDialog extends StatefulWidget {
 }
 
 class _BucketArchiveDialogState extends State<BucketArchiveDialog> {
-  final Color contentFillColor = MyTheme.grey3;
+  final Color contentFillColor = MyTheme.grey2;
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,6 @@ import 'package:tumitas/theme/theme.dart';
 const int bucketLayoutSizeX = 5;
 const int bucketLayoutSizeY = 7;
 
-// double oneBlockSize = 70.0;
 List<Color> blockColorList = [
   MyTheme.fieryRed,
   MyTheme.sunsetOrange,
@@ -22,9 +21,14 @@ List<Color> blockColorList = [
 List<Color> bucketOuterColorList = [
   MyTheme.twilightBlue,
   MyTheme.deepRose,
-  MyTheme.oceanGreen,
   MyTheme.darkPurple,
   MyTheme.oliveGold,
+  MyTheme.forestGreen,
+  MyTheme.midnightBlue,
+  MyTheme.rubyRed,
+  MyTheme.darkTeal,
+  MyTheme.burntOrange,
+  MyTheme.darkSlateGray,
 ];
 
 List<Color> bucketInnerColorList = [
@@ -33,4 +37,9 @@ List<Color> bucketInnerColorList = [
   MyTheme.lightMoss,
   MyTheme.lavenderBlush,
   MyTheme.mustardYellow,
+  MyTheme.tealGreen,
+  MyTheme.peach,
+  MyTheme.thistle,
+  MyTheme.lightCoral,
+  MyTheme.paleTurquoise,
 ];

@@ -53,6 +53,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: BottomNavigationBar(
           selectedFontSize: 0,
           unselectedFontSize: 0,
@@ -96,7 +97,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [MyTheme.blue2, MyTheme.green5],
+              colors: [MyTheme.blue1, MyTheme.green5],
             ),
           ),
           child: PageView(

@@ -8,7 +8,7 @@ import 'package:tumitas/widgets/bucket_widget.dart';
 
 class PlaySpaceWidget extends StatefulWidget {
   final Bucket bucket;
-  final int currentBucketId;
+  final String currentBucketId;
   final Block? nextSettingBlock;
 
   const PlaySpaceWidget({
@@ -63,8 +63,8 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
   }
 
   void saveCurrentBucket(Bucket bucket) async {
-    final int? bucketId = await SqfliteHelper.instance.insertBucket(bucket);
-    print('savedBucketId: $bucketId');
+    await SqfliteHelper.instance.insertBucket(bucket);
+    print('savedBucketId: ${bucket.bucketId}');
   }
 
   @override
@@ -73,7 +73,8 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
 
     void onSwipeDown() {
       if (nextBlock == null) return;
-      final addAvailable = widget.bucket.addNewBlock(nextBlock!, blockCoordinateX ~/ oneBlockSize);
+      final newPositionX = (blockCoordinateX + 10) ~/ oneBlockSize; // +10は誤差対策
+      final addAvailable = widget.bucket.addNewBlock(nextBlock!, newPositionX);
       if (!addAvailable) {
         _shakeAnimationController.repeat();
         Future.delayed(const Duration(milliseconds: 500), () {

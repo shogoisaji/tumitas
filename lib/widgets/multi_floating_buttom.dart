@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tumitas/models/block.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
-import 'package:tumitas/widgets/dialog/block_setting_dialog.dart';
+import 'package:tumitas/widgets/bottom_sheet/block_setting_bottom_sheet.dart';
+import 'package:tumitas/widgets/bottom_sheet/bucket_setting_bottom_sheet.dart';
 import 'package:tumitas/widgets/dialog/bucket_archive_dialog.dart';
-import 'package:tumitas/widgets/dialog/bucket_setting_dialog.dart';
 
 class MultiFloatingBottom extends StatefulWidget {
   final Bucket? currentBucket;
@@ -55,9 +55,10 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
           setState(() {
             isPressed = false;
           });
-          showDialog(
+          showModalBottomSheet(
+            isScrollControlled: true,
             context: context,
-            builder: (_) => BlockSettingDialog(
+            builder: (_) => BlockSettingBottomSheet(
               onSetting: (Block block) {
                 setState(() {
                   _handleSetBlock(block);
@@ -75,9 +76,9 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
             isPressed = false;
           });
           if (widget.currentBucket != null) {
-            showDialog(
+            showBottomSheet(
               context: context,
-              builder: (_) => BucketSettingDialog(
+              builder: (_) => BucketSettingBottomSheet(
                 currentBucket: widget.currentBucket!,
                 onSettingBucket: (Map<String, dynamic> settingBucketProperties) {
                   setState(() {

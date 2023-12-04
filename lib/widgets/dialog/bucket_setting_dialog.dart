@@ -15,7 +15,7 @@ class BucketSettingDialog extends StatefulWidget {
 
 class _BucketSettingDialogState extends State<BucketSettingDialog> {
   late TextEditingController _textController;
-  final Color contentFillColor = MyTheme.grey3;
+  final Color contentFillColor = MyTheme.grey2;
   int _selectedInnerColorIndex = 0;
   int _selectedOuterColorIndex = 0;
   FocusNode focusNode = FocusNode();

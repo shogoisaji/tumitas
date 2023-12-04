@@ -5,12 +5,14 @@ class Block {
   final String title;
   final String description;
   final BlockType blockType;
+  final DateTime blockRegisterDate;
 
   Block(
     this.color,
     this.title,
     this.description,
     this.blockType,
+    this.blockRegisterDate,
   );
 
   Map<String, dynamic> blockToJson() => {
@@ -18,6 +20,7 @@ class Block {
         'title': title,
         'description': description,
         'blockType': blockType.toString().split('.').last, // toString()->"BlockType.block1x1"
+        'blockRegisterDate': blockRegisterDate.toIso8601String(),
       };
 
   factory Block.blockFromJson(Map<String, dynamic> json) {
@@ -26,6 +29,7 @@ class Block {
       json['title'],
       json['description'],
       BlockType.values.firstWhere((e) => e.toString().split('.').last == json['blockType']),
+      DateTime.parse(json['blockRegisterDate']),
     );
   }
 }

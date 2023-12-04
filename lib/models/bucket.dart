@@ -3,18 +3,19 @@ import 'package:tumitas/models/block.dart';
 import 'dart:convert';
 
 class Bucket {
+  final String bucketId;
   final String bucketTitle;
   final String bucketDescription;
   final Color bucketInnerColor;
   final Color bucketOuterColor;
   final int bucketLayoutSizeX;
   final int bucketLayoutSizeY;
-  // final BucketLayoutSize bucketLayoutSize;
   final List<Map<String, dynamic>> bucketIntoBlock; // [{ 'block': Block, 'position': Position },...]
   final DateTime bucketRegisterDate;
   final DateTime? bucketArchiveDate;
 
   Bucket({
+    required this.bucketId,
     required this.bucketTitle,
     required this.bucketDescription,
     required this.bucketInnerColor,
@@ -28,6 +29,7 @@ class Bucket {
 
   Bucket settingBucket(String title, Color innerColor, Color outerColor) {
     return Bucket(
+      bucketId: bucketId, // no change
       bucketTitle: title,
       bucketDescription: bucketDescription, // no change
       bucketInnerColor: innerColor,
@@ -42,6 +44,7 @@ class Bucket {
 
   Bucket updateArchiveDate(DateTime archiveDate) {
     return Bucket(
+      bucketId: bucketId, // no change
       bucketTitle: bucketTitle, // no change
       bucketDescription: bucketDescription, // no change
       bucketInnerColor: bucketInnerColor, // no change
@@ -155,19 +158,3 @@ class Position {
     return Position(json['positionX'], json['positionY']);
   }
 }
-
-// class BucketLayoutSize {
-//   final int x;
-//   final int y;
-//   BucketLayoutSize(this.x, this.y);
-
-//   Map<String, dynamic> toJson() => {
-//         'x': x,
-//         'y': y,
-//       };
-
-//   factory BucketLayoutSize.fromJson(String jsonString) {
-//     final Map<String, dynamic> json = jsonDecode(jsonString);
-//     return BucketLayoutSize(json['x'], json['y']);
-//   }
-// }

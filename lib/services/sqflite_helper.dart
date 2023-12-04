@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:tumitas/models/bucket.dart';
 
 class SqfliteHelper {
-  static const _databaseName = "sqflite6_Database.db";
+  static const _databaseName = "sqflite9_Database.db";
   static const _databaseVersion = 1;
 
   static const bucketTable = 'bucketTable';
@@ -39,7 +39,7 @@ class SqfliteHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
           CREATE TABLE $bucketTable (
-            $columnBucketId INTEGER PRIMARY KEY,
+            $columnBucketId TEXT PRIMARY KEY,
             $columnBucketTitle TEXT NOT NULL,
             $columnBucketDescription TEXT,
             $columnBucketInnerColor INTEGER NOT NULL,
@@ -54,9 +54,10 @@ class SqfliteHelper {
   }
 
 // add database row
-  Future<int>? insertBucket(Bucket bucket) async {
+  Future<void> insertBucket(Bucket bucket) async {
     Database db = await instance.database;
     final row = {
+      columnBucketId: bucket.bucketId,
       columnBucketTitle: bucket.bucketTitle,
       columnBucketDescription: bucket.bucketDescription,
       columnBucketInnerColor: bucket.bucketInnerColor.value,
@@ -67,11 +68,9 @@ class SqfliteHelper {
       columnBucketRegisterDate: bucket.bucketRegisterDate.toIso8601String(),
       // columnBucketArchiveDate: bucket.bucketArchiveDate.toIso8601String(),
     };
-    final id = await db.insert(bucketTable, row);
-    print('挿入された行のid: $id');
+    await db.insert(bucketTable, row);
     print(
-        '挿入されたデータ: ${row[columnBucketTitle]}, ${row[columnBucketDescription]}, ${row[columnBucketInnerColor]}, ${row[columnBucketOuterColor]}, ${row[columnBucketLayoutSizeX]}:${row[columnBucketLayoutSizeY]}, ${row[columnBucketIntoBlock]}, ${row[columnBucketRegisterDate]}');
-    return id;
+        '挿入されたデータ: ${row[columnBucketId]}, ${row[columnBucketTitle]}, ${row[columnBucketDescription]}, ${row[columnBucketInnerColor]}, ${row[columnBucketOuterColor]}, ${row[columnBucketLayoutSizeX]}:${row[columnBucketLayoutSizeY]}, ${row[columnBucketIntoBlock]}, ${row[columnBucketRegisterDate]}');
   }
 
   Future<List<Bucket>> fetchArchiveBucket() async {
@@ -85,7 +84,7 @@ class SqfliteHelper {
   }
 
 // find by Id
-  Future<Bucket?> findBucketById(int id) async {
+  Future<Bucket?> findBucketById(String id) async {
     Database db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query(
       bucketTable,
@@ -102,6 +101,7 @@ class SqfliteHelper {
 
   Bucket mapToBucket(Map<String, dynamic> map) {
     final Bucket bucket = Bucket(
+      bucketId: map[columnBucketId],
       bucketTitle: map[columnBucketTitle],
       bucketDescription: map[columnBucketDescription] ?? '',
       bucketInnerColor: Color(map[columnBucketInnerColor]),
@@ -116,7 +116,7 @@ class SqfliteHelper {
   }
 
 // update bucketIntoBlock
-  Future<int> updateBucketIntoBlock(int id, Bucket bucket) async {
+  Future<int> updateBucketIntoBlock(String id, Bucket bucket) async {
     Database db = await instance.database;
     return await db.update(
       bucketTable,
@@ -129,7 +129,7 @@ class SqfliteHelper {
   }
 
 // update bucketIntoBlock
-  Future<int> updateBucket(int id, Bucket bucket) async {
+  Future<int> updateBucket(String id, Bucket bucket) async {
     Database db = await instance.database;
     return await db.update(
       bucketTable,
@@ -150,9 +150,9 @@ class SqfliteHelper {
   }
 
 // delete row
-  Future<int> deleteRow(int id) async {
+  Future<void> deleteRow(String id) async {
     Database db = await instance.database;
-    return await db.delete(
+    await db.delete(
       bucketTable,
       where: '$columnBucketId = ?',
       whereArgs: [id],

@@ -11,19 +11,19 @@ class SharedPreferencesHelper {
     print('SharedPreferencesHelper is initialized');
   }
 
-  Future<void> saveCurrentBucketId(int bucketId) async {
+  Future<void> saveCurrentBucketId(String bucketId) async {
     if (_prefs == null) {
       await init();
     }
-    await _prefs!.setInt('currentBucketId', bucketId);
+    await _prefs!.setString('currentBucketId', bucketId);
     print('saveCurrentBucketId: $bucketId');
   }
 
-  Future<int?> loadCurrentBucketId() async {
+  Future<String?> loadCurrentBucketId() async {
     if (_prefs == null) {
       await init();
     }
-    int? bucketId = _prefs!.getInt('currentBucketId');
+    String? bucketId = _prefs!.getString('currentBucketId');
     print('loadCurrentBucketId: $bucketId');
     return bucketId;
   }
