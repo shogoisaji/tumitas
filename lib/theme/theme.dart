@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyTheme {
+  static const Color disableButton = Color(0xffB3E6C4);
+
   static const Color green1 = Color(0xff00a15d);
   static const Color green2 = Color(0xff2bbe00);
   static const Color green3 = Color(0xff07ff1b);

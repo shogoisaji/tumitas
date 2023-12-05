@@ -84,6 +84,7 @@ class _BucketSettingBottomSheetState extends State<BucketSettingBottomSheet> {
                   : GestureDetector(
                       onTap: () {
                         setTodayText();
+                        setState(() {});
                       },
                       child: const Icon(Icons.calendar_today, color: MyTheme.grey1),
                     ),
@@ -241,26 +242,39 @@ class _BucketSettingBottomSheetState extends State<BucketSettingBottomSheet> {
                 child: const Text('Cancel', style: TextStyle(color: MyTheme.green1, fontSize: 22)),
               ),
               const SizedBox(width: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Map<String, dynamic> settingBucketProperties = {
-                    'title': _textController.text,
-                    'innerColor': bucketInnerColorList[_selectedInnerColorIndex],
-                    'outerColor': bucketOuterColorList[_selectedOuterColorIndex],
-                  };
-                  widget.onSettingBucket(settingBucketProperties);
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  backgroundColor: MyTheme.green1,
-                ),
-                child:
-                    const Text('OK', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22)),
-              ),
+              _textController.text != ''
+                  ? ElevatedButton(
+                      onPressed: () {
+                        Map<String, dynamic> settingBucketProperties = {
+                          'title': _textController.text,
+                          'innerColor': bucketInnerColorList[_selectedInnerColorIndex],
+                          'outerColor': bucketOuterColorList[_selectedOuterColorIndex],
+                        };
+                        widget.onSettingBucket(settingBucketProperties);
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        backgroundColor: MyTheme.green1,
+                      ),
+                      child: const Text('OK',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22)),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        backgroundColor: MyTheme.disableButton,
+                      ),
+                      child: const Text('OK',
+                          style: TextStyle(color: Colors.black12, fontWeight: FontWeight.bold, fontSize: 22)),
+                    ),
             ],
           ),
         ],

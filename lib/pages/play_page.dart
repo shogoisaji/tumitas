@@ -160,7 +160,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
               ),
               Positioned(
                 left: 10,
-                top: 5,
+                top: 10,
                 child: Transform.rotate(
                   angle: -0.15,
                   child: Image.asset(
@@ -196,7 +196,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Icon(Icons.add, color: Colors.white, size: 28),
-                                Text('New Bucket', style: TextStyle(color: Colors.white, fontSize: 16))
+                                Text('New Bucket', style: TextStyle(color: Colors.white, fontSize: 18))
                               ],
                             ),
                           )),
@@ -207,13 +207,11 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             const SizedBox(height: 24),
-                            currentBucket != null
-                                ? PlaySpaceWidget(
-                                    bucket: currentBucket!,
-                                    nextSettingBlock: nextPlayBlock,
-                                    currentBucketId: currentBucketId,
-                                  )
-                                : const Center(child: Text('No Current Bucket')),
+                            PlaySpaceWidget(
+                              bucket: currentBucket!,
+                              nextSettingBlock: nextPlayBlock,
+                              currentBucketId: currentBucketId,
+                            )
                           ],
                         ),
                       ),

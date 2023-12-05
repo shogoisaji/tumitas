@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tumitas/pages/archive_page.dart';
 import 'package:tumitas/pages/play_page.dart';
-import 'package:tumitas/pages/settings_page.dart';
 import 'package:tumitas/services/shared_preferences_helper.dart';
 import 'package:tumitas/theme/theme.dart';
 
@@ -40,14 +40,23 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   List<Map<String, dynamic>> bottomNavigationBarItems = [
     {
-      'icon': Icons.home,
-      'page': PlayPage(),
+      'icon': const FaIcon(
+        FontAwesomeIcons.cube,
+        size: 30,
+      ),
+      'page': const PlayPage(),
     },
-    {'icon': Icons.archive, 'page': ArchivePage()},
     {
-      'icon': Icons.settings,
-      'page': SettingsPage(),
+      'icon': const FaIcon(
+        FontAwesomeIcons.boxArchive,
+        size: 30,
+      ),
+      'page': const ArchivePage()
     },
+    // {
+    //   'icon': Icons.settings,
+    //   'page': SettingsPage(),
+    // },
   ];
 
   @override
@@ -73,10 +82,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 .map((e) => BottomNavigationBarItem(
                     icon: Column(
                       children: [
-                        Icon(e['icon']),
+                        e['icon'],
                         if (currentIndex == bottomNavigationBarItems.indexOf(e))
                           Container(
-                            width: 20,
+                            width: 24,
                             height: 3,
                             margin: const EdgeInsets.only(top: 4),
                             decoration: const BoxDecoration(

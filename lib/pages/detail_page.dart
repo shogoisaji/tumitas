@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tumitas/main.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/services/sqflite_helper.dart';
 import 'package:tumitas/theme/theme.dart';
@@ -20,27 +21,29 @@ class _DetailPageState extends State<DetailPage> {
     return DateFormat('yyyy.MM.dd').format(dateTime);
   }
 
-  void _handleSettingBucket(Map<String, dynamic> settingBucketProperties) {
+  void _handleSettingBucket(Map<String, dynamic> settingBucketProperties) async {
     final Bucket changeBucket = widget.selectedBucket.settingBucket(
       settingBucketProperties['title'],
       settingBucketProperties['innerColor'],
       settingBucketProperties['outerColor'],
     );
-    // setState(() {
-    //   currentBucket = changeBucket;
-    // });
-    updateCurrentBucket(widget.selectedBucket.bucketId, changeBucket);
+    await updateSelectedBucket(widget.selectedBucket.bucketId, changeBucket);
+    if (mounted) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
+    }
+  }
+
+  Future<void> updateSelectedBucket(String bucketId, Bucket bucket) async {
+    await SqfliteHelper.instance.updateBucket(bucketId, bucket);
+    print('updateBucketId: $bucketId');
   }
 
   Future<void> _handleDeleteBucket(String bucketId) async {
     await SqfliteHelper.instance.deleteRow(bucketId);
     print('deleteBucketId: $bucketId');
-    setState(() {});
-  }
-
-  Future<void> updateCurrentBucket(String bucketId, Bucket bucket) async {
-    await SqfliteHelper.instance.updateBucket(bucketId, bucket);
-    print('updateBucketId: $bucketId');
+    if (mounted) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
+    }
   }
 
   @override
