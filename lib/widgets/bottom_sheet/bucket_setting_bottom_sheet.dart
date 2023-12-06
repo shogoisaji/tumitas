@@ -61,12 +61,13 @@ class _BucketSettingBottomSheetState extends State<BucketSettingBottomSheet> {
       decoration: const BoxDecoration(
           color: MyTheme.green5,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28),
           )),
       child: Column(
         children: [
-          const Text('New Bucket', style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 28)),
+          const Text('Bucket Setting',
+              style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 28)),
           const SizedBox(height: 16),
           TextField(
             controller: _textController,
@@ -105,7 +106,7 @@ class _BucketSettingBottomSheetState extends State<BucketSettingBottomSheet> {
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: MyTheme.grey1, width: 1),
               ),
-              height: 75,
+              height: 80,
               width: double.infinity,
               margin: const EdgeInsets.only(top: 16),
               child: Column(
@@ -169,7 +170,7 @@ class _BucketSettingBottomSheetState extends State<BucketSettingBottomSheet> {
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: MyTheme.grey1, width: 1),
               ),
-              height: 75,
+              height: 80,
               width: double.infinity,
               margin: const EdgeInsets.only(top: 16),
               child: Column(
@@ -226,7 +227,7 @@ class _BucketSettingBottomSheetState extends State<BucketSettingBottomSheet> {
                   ),
                 ],
               )),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

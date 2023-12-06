@@ -43,19 +43,20 @@ class _BlockSettingBottomSheetState extends State<BlockSettingBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    const double sheetHeight = 550;
+    const double sheetHeight = 580;
     return Container(
       height: sheetHeight,
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
           color: MyTheme.green5,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28),
           )),
       child: Column(children: [
+        const Text('New Task Block', style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 28)),
         const SizedBox(
-          height: 24,
+          height: 16,
         ),
         TextField(
           controller: _textController,

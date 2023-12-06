@@ -17,23 +17,23 @@ class _BucketArchiveDialogState extends State<BucketArchiveDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title:
-          const Text('Add Archive', style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 32)),
+          const Text('Add Archive', style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 28)),
       backgroundColor: MyTheme.green5,
       content: const Text(
-        'このバケットをアーカイブに追加しますか?',
-        style: TextStyle(color: Colors.black, fontSize: 20),
+        'Add this bucket to archive?',
+        style: TextStyle(color: MyTheme.grey1, fontSize: 20),
       ),
       actions: [
         ElevatedButton(
           onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(left: 8, right: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             backgroundColor: Colors.white,
           ),
-          child: const Text('Cancel', style: TextStyle(color: MyTheme.green1)),
+          child: const Text('Cancel', style: TextStyle(color: MyTheme.green1, fontSize: 22)),
         ),
         ElevatedButton(
           onPressed: () {
@@ -41,13 +41,13 @@ class _BucketArchiveDialogState extends State<BucketArchiveDialog> {
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(left: 8, right: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             backgroundColor: MyTheme.green1,
           ),
-          child: const Text('Add', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+          child: const Text('Add', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22)),
         ),
       ],
     );

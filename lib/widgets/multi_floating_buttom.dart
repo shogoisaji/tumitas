@@ -50,7 +50,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
     List<Map<String, dynamic>> floatingButtonList = [
       {
         'icon': Icons.note_alt,
-        'title': 'Task    ',
+        'title': 'Block  ',
         'onPressed': () {
           setState(() {
             isPressed = false;
@@ -76,7 +76,8 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
             isPressed = false;
           });
           if (widget.currentBucket != null) {
-            showBottomSheet(
+            showModalBottomSheet(
+              isScrollControlled: true,
               context: context,
               builder: (_) => BucketSettingBottomSheet(
                 currentBucket: widget.currentBucket!,
@@ -87,14 +88,12 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
                 },
               ),
             );
-          } else {
-            debugPrint('currentBucket is null');
           }
         },
       },
       {
         'icon': Icons.archive,
-        'title': 'archive',
+        'title': 'Archive',
         'onPressed': () {
           setState(() {
             isPressed = false;
@@ -111,20 +110,9 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
                         }
                       },
                     ));
-          } else {
-            debugPrint('currentBucket is null');
           }
         },
       },
-      // {
-      //   'icon': Icons.menu_book,
-      //   'title': '',
-      //   'onPressed': () {
-      //     setState(() {
-      //       isPressed = false;
-      //     });
-      //   },
-      // },
     ];
 
     return isPressed
@@ -135,7 +123,7 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
               });
             },
             child: Container(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withOpacity(0.5),
               alignment: Alignment.bottomRight,
               width: double.infinity,
               height: double.infinity,
@@ -152,13 +140,11 @@ class _MultiFloatingBottomState extends State<MultiFloatingBottom> {
                             ),
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  // shape: const CircleBorder(),
                                   elevation: 4,
                                   backgroundColor: MyTheme.green1,
                                 ),
                                 onPressed: floatingButton['onPressed'],
-                                child: Container(
-                                  // padding: const EdgeInsets.all(4),
+                                child: SizedBox(
                                   width: 100,
                                   height: 60,
                                   child: Row(

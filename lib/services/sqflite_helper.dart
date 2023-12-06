@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:tumitas/models/bucket.dart';
 
 class SqfliteHelper {
-  static const _databaseName = "sqflite9_Database.db";
+  static const _databaseName = "sqflite_Database.db";
   static const _databaseVersion = 1;
 
   static const bucketTable = 'bucketTable';
@@ -66,17 +66,13 @@ class SqfliteHelper {
       columnBucketLayoutSizeY: bucket.bucketLayoutSizeY,
       columnBucketIntoBlock: bucket.jsonEncodeBucketIntoBlock(),
       columnBucketRegisterDate: bucket.bucketRegisterDate.toIso8601String(),
-      // columnBucketArchiveDate: bucket.bucketArchiveDate.toIso8601String(),
     };
     await db.insert(bucketTable, row);
-    print(
-        '挿入されたデータ: ${row[columnBucketId]}, ${row[columnBucketTitle]}, ${row[columnBucketDescription]}, ${row[columnBucketInnerColor]}, ${row[columnBucketOuterColor]}, ${row[columnBucketLayoutSizeX]}:${row[columnBucketLayoutSizeY]}, ${row[columnBucketIntoBlock]}, ${row[columnBucketRegisterDate]}');
   }
 
   Future<List<Bucket>> fetchArchiveBucket() async {
     Database db = await instance.database;
     List<Map<String, dynamic>>? allBucket = await db.query(bucketTable, orderBy: '$columnBucketRegisterDate DESC');
-    print('fetchArchiveBucket: length ${allBucket.length}');
     if (allBucket == []) return [];
     final List<Bucket> bucketList =
         allBucket.where((e) => e[columnBucketArchiveDate] != null).map((e) => mapToBucket(e)).toList();
@@ -157,13 +153,5 @@ class SqfliteHelper {
       where: '$columnBucketId = ?',
       whereArgs: [id],
     );
-  }
-
-// Total Records
-  Future<String> getTotal() async {
-    Database db = await instance.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT COUNT(*) as count FROM $bucketTable');
-
-    return maps.first['count'].toString();
   }
 }

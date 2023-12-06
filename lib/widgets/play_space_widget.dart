@@ -64,7 +64,6 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
 
   void saveCurrentBucket(Bucket bucket) async {
     await SqfliteHelper.instance.insertBucket(bucket);
-    print('savedBucketId: ${bucket.bucketId}');
   }
 
   @override
@@ -87,7 +86,6 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
       });
       _swipeDownAnimationController.forward();
       SqfliteHelper.instance.updateBucketIntoBlock(widget.currentBucketId, widget.bucket);
-      debugPrint('swipe down');
     }
 
     void setNextBlockPosition() {

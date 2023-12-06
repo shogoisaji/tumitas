@@ -56,15 +56,15 @@ class _DetailBucketSettingBottomSheetState extends State<DetailBucketSettingBott
 
   @override
   Widget build(BuildContext context) {
-    final double sheetHeight = 450 + MediaQuery.of(context).viewInsets.bottom / 3.5;
+    final double sheetHeight = 470 + MediaQuery.of(context).viewInsets.bottom / 3.5;
     return Container(
       height: sheetHeight,
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
           color: MyTheme.green5,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28),
           )),
       child: Column(
         children: [
@@ -228,9 +228,9 @@ class _DetailBucketSettingBottomSheetState extends State<DetailBucketSettingBott
                   ),
                 ],
               )),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
                 onPressed: () {
@@ -240,9 +240,10 @@ class _DetailBucketSettingBottomSheetState extends State<DetailBucketSettingBott
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Delete Bucket',
-                              style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 32)),
+                              style: TextStyle(color: MyTheme.grey1, fontWeight: FontWeight.bold, fontSize: 28)),
                           backgroundColor: MyTheme.green5,
-                          content: const Text('本当に削除しますか？', style: TextStyle(color: MyTheme.grey1, fontSize: 22)),
+                          content: const Text('Really delete?                   ',
+                              style: TextStyle(color: MyTheme.grey1, fontSize: 20)),
                           actions: [
                             ElevatedButton(
                               onPressed: () => Navigator.pop(context),
@@ -324,11 +325,7 @@ class _DetailBucketSettingBottomSheetState extends State<DetailBucketSettingBott
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22)),
                         )
                       : ElevatedButton(
-                          onPressed: () {
-                            //
-                            //
-                            //
-                          },
+                          onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                             shape: const RoundedRectangleBorder(

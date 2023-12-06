@@ -35,12 +35,10 @@ class _DetailPageState extends State<DetailPage> {
 
   Future<void> updateSelectedBucket(String bucketId, Bucket bucket) async {
     await SqfliteHelper.instance.updateBucket(bucketId, bucket);
-    print('updateBucketId: $bucketId');
   }
 
   Future<void> _handleDeleteBucket(String bucketId) async {
     await SqfliteHelper.instance.deleteRow(bucketId);
-    print('deleteBucketId: $bucketId');
     if (mounted) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
     }
@@ -123,12 +121,12 @@ class _DetailPageState extends State<DetailPage> {
                       onPressed: () {
                         //
                         showModalBottomSheet(
+                          isScrollControlled: true,
                           context: context,
                           builder: (_) => DetailBucketSettingBottomSheet(
                             selectedBucket: widget.selectedBucket,
                             deleteBucket: (String bucketId) {
                               _handleDeleteBucket(bucketId);
-                              print("deleteBucket: $bucketId");
                             },
                             onSettingDetailPageBucket: (Map<String, dynamic> settingBucketProperties) {
                               _handleSettingBucket(settingBucketProperties);

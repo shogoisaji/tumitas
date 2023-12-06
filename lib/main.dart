@@ -42,21 +42,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     {
       'icon': const FaIcon(
         FontAwesomeIcons.cube,
-        size: 30,
+        size: 28,
       ),
       'page': const PlayPage(),
     },
     {
       'icon': const FaIcon(
         FontAwesomeIcons.boxArchive,
-        size: 30,
+        size: 28,
       ),
       'page': const ArchivePage()
     },
-    // {
-    //   'icon': Icons.settings,
-    //   'page': SettingsPage(),
-    // },
   ];
 
   @override
@@ -74,7 +70,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           onTap: (index) {
             setState(() {
               currentIndex = index;
-              pageController.animateToPage(index, duration: const Duration(milliseconds: 400), curve: Curves.ease);
+              pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.ease);
             });
           },
           items: [
@@ -87,7 +83,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           Container(
                             width: 24,
                             height: 3,
-                            margin: const EdgeInsets.only(top: 4),
+                            margin: const EdgeInsets.only(top: 6),
                             decoration: const BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.all(

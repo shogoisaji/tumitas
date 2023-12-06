@@ -56,8 +56,11 @@ class BucketWidget extends StatelessWidget {
         ),
         Text(
           bucket.bucketTitle,
-          style: const TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: MyTheme.grey1, overflow: TextOverflow.ellipsis),
+          style: TextStyle(
+              fontSize: oneBlockSize > 50 ? 20 : 16,
+              fontWeight: FontWeight.bold,
+              color: MyTheme.grey1,
+              overflow: TextOverflow.ellipsis),
         ),
       ],
     );

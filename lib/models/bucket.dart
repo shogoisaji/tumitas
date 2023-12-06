@@ -82,26 +82,6 @@ class Bucket {
     return bucketIntoBlocks;
   }
 
-  // Map<String, dynamic> toJson() => {
-  //       'bucketTitle': bucketTitle,
-  //       'bucketDescription': bucketDescription,
-  //       'bucketInnerColor': bucketInnerColor.value,
-  //       'bucketOuterColor': bucketOuterColor.value,
-  //       'bucketLayoutSize': bucketLayoutSize.toJson(),
-  //       'bucketIntoBlock': jsonEncodeBucketIntoBlock(),
-  //     };
-
-  // factory Bucket.fromJson(Map<String, dynamic> json) {
-  //   return Bucket(
-  //     bucketTitle: json['bucketTitle'],
-  //     bucketDescription: json['bucketDescription'],
-  //     bucketInnerColor: Color(json['bucketInnerColor']),
-  //     bucketOuterColor: Color(json['bucketOuterColor']),
-  //     bucketLayoutSize: BucketLayoutSize.fromJson(json['bucketLayoutSize']),
-  //     bucketIntoBlock: jsonDecodeBucketIntoBlock(json['bucketIntoBlock'].cast<String>()),
-  //   );
-  // }
-
   List<Position> fragmentBlockPosition(Block block, Position position) {
     List<Position> dismantlePosition = [];
     block.blockType.blockSize.x;

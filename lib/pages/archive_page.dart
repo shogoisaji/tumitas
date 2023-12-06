@@ -13,7 +13,6 @@ class ArchivePage extends StatefulWidget {
 
 Future<List<Bucket>> loadAllBucket() async {
   final List<Bucket> bucketList = await SqfliteHelper.instance.fetchArchiveBucket();
-  print('loadAllBucket: length ${bucketList.length}');
   return bucketList;
 }
 

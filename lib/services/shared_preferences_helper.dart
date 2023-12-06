@@ -8,7 +8,6 @@ class SharedPreferencesHelper {
       return;
     }
     _prefs = await SharedPreferences.getInstance();
-    print('SharedPreferencesHelper is initialized');
   }
 
   Future<void> saveCurrentBucketId(String bucketId) async {
@@ -16,7 +15,6 @@ class SharedPreferencesHelper {
       await init();
     }
     await _prefs!.setString('currentBucketId', bucketId);
-    print('saveCurrentBucketId: $bucketId');
   }
 
   Future<String?> loadCurrentBucketId() async {
@@ -24,7 +22,6 @@ class SharedPreferencesHelper {
       await init();
     }
     String? bucketId = _prefs!.getString('currentBucketId');
-    print('loadCurrentBucketId: $bucketId');
     return bucketId;
   }
 }

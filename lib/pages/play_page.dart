@@ -62,7 +62,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   Future<void> _handleAddArchive() async {
     if (currentBucket == null) return;
     final Bucket addArchiveBucket = currentBucket!.updateArchiveDate(DateTime.now());
-    print('bbb ${currentBucketId}');
 
     await updateCurrentBucket(currentBucketId, addArchiveBucket);
     await SharedPreferencesHelper().saveCurrentBucketId('');
@@ -75,29 +74,22 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   Future<void> registerBucket(Bucket bucket) async {
     await SqfliteHelper.instance.insertBucket(bucket);
     await SharedPreferencesHelper().saveCurrentBucketId(bucket.bucketId);
-    print('insertBucketId: ${bucket.bucketId}');
   }
 
   Future<void> updateCurrentBucket(String bucketId, Bucket bucket) async {
     await SqfliteHelper.instance.updateBucket(bucketId, bucket);
-    print('updateBucketId: $bucketId');
   }
 
   Future<void> loadBucket() async {
     currentBucketId = await SharedPreferencesHelper().loadCurrentBucketId() ?? '';
-    print('currentBucketId: $currentBucketId');
     if (currentBucketId != '') {
       final Bucket? bucket = await SqfliteHelper.instance.findBucketById(currentBucketId);
       if (bucket == null) {
-        print('No Current Bucket');
         return;
       }
       setState(() {
         currentBucket = bucket;
-        print('currentBucketTitle: ${currentBucket != null ? currentBucket!.bucketTitle : 'null'}');
       });
-    } else {
-      print('No Current Bucket');
     }
   }
 
@@ -190,7 +182,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                     ));
                           },
                           child: const SizedBox(
-                            width: 140,
+                            width: 150,
                             height: 60,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,7 +198,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 32),
                             PlaySpaceWidget(
                               bucket: currentBucket!,
                               nextSettingBlock: nextPlayBlock,
