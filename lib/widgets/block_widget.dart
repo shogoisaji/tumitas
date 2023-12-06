@@ -32,7 +32,7 @@ class BlockWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.1),
                 spreadRadius: 0.5,
                 blurRadius: 1.0,
                 offset: const Offset(0, 0),

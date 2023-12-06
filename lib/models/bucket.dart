@@ -111,15 +111,10 @@ class Bucket {
     return maxPositionY;
   }
 
-  bool addNewBlock(Block newBlock, int newPositionX) {
-    final maxPositionY = getMaxPositionY(newBlock, newPositionX);
-    if (maxPositionY + newBlock.blockType.blockSize.y > bucketLayoutSizeY - 1) {
-      return false;
-    }
-    final newPosition = Position(newPositionX, maxPositionY + 1);
+  void addNewBlock(Block newBlock, int newPositionX, int newPositionY) {
+    final newPosition = Position(newPositionX, newPositionY);
     Map<String, Object> newBucketIntoBlock = {'block': newBlock, 'position': newPosition};
     bucketIntoBlock.add(newBucketIntoBlock);
-    return true;
   }
 }
 

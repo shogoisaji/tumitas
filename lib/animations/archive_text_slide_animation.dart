@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 
-class SwipeDownAnimation extends StatefulWidget {
+class ArchiveTextSlideAnimation extends StatefulWidget {
   final Widget child;
-  final double downDistance;
   final AnimationController animationController;
-  const SwipeDownAnimation({
+  const ArchiveTextSlideAnimation({
     super.key,
     required this.child,
     required this.animationController,
-    required this.downDistance,
   });
 
   @override
-  State<SwipeDownAnimation> createState() => _SwipeDownAnimationState();
+  State<ArchiveTextSlideAnimation> createState() => _ArchiveTextSlideAnimationState();
 }
 
-class _SwipeDownAnimationState extends State<SwipeDownAnimation> {
+class _ArchiveTextSlideAnimationState extends State<ArchiveTextSlideAnimation> {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
         animation: widget.animationController,
         builder: (context, child) => Transform.translate(
-              offset: Offset(0, widget.animationController.value * widget.downDistance),
+              offset: Offset(-widget.animationController.value * 250, 0),
               child: widget.child,
             ));
   }

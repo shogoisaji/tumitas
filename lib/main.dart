@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tumitas/pages/archive_page.dart';
 import 'package:tumitas/pages/play_page.dart';
@@ -8,6 +9,9 @@ import 'package:tumitas/theme/theme.dart';
 void main() async {
   runApp(const MyApp());
   await SharedPreferencesHelper.init();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 }
 
 class MyApp extends StatelessWidget {

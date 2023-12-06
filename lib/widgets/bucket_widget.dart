@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tumitas/models/bucket.dart';
 import 'package:tumitas/theme/theme.dart';
 import 'package:tumitas/widgets/block_widget.dart';
+import 'package:tumitas/widgets/dialog/block_detail_dialog.dart';
 
 class BucketWidget extends StatelessWidget {
   final Bucket bucket;
@@ -15,6 +16,7 @@ class BucketWidget extends StatelessWidget {
     final double borderRadius = oneBlockSize / 7;
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           alignment: Alignment.bottomCenter,
@@ -46,9 +48,20 @@ class BucketWidget extends StatelessWidget {
                 Positioned(
                   left: bucket.bucketIntoBlock[i]['position'].positionX * oneBlockSize,
                   bottom: bucket.bucketIntoBlock[i]['position'].positionY * oneBlockSize,
-                  child: BlockWidget(
-                    bucket.bucketIntoBlock[i]['block'],
-                    oneBlockSize,
+                  child: GestureDetector(
+                    onTap: () {
+                      print('tap:${bucket.bucketIntoBlock[i]['block'].title}');
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return BlockDetailDialog(block: bucket.bucketIntoBlock[i]['block']);
+                        },
+                      );
+                    },
+                    child: BlockWidget(
+                      bucket.bucketIntoBlock[i]['block'],
+                      oneBlockSize,
+                    ),
                   ),
                 ),
             ]),
