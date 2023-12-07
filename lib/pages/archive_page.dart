@@ -36,7 +36,7 @@ class _ArchivePageState extends State<ArchivePage> with TickerProviderStateMixin
 
     _bandAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1000),
     );
     bandCurvedAnimation = CurvedAnimation(
       parent: _bandAnimationController,
@@ -87,6 +87,7 @@ class _ArchivePageState extends State<ArchivePage> with TickerProviderStateMixin
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
+                              _bandAnimationController.forward(from: 1.0);
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(

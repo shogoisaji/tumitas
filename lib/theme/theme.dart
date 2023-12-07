@@ -18,7 +18,7 @@ class MyTheme {
   static const Color lemonYellow = Color(0xffffff15);
   static const Color brightGreen = Color(0xff2eeb10);
   static const Color mintGreen = Color(0xff00ebb0);
-  static const Color skyBlue = Color(0xff00ffff);
+  static const Color skyBlue = Color(0xff3CDCFF);
   static const Color deepSkyBlue = Color(0xff3b89ff);
   static const Color royalPurple = Color(0xff8B65FF);
   static const Color vividPink = Color(0xffd83bff);
@@ -32,7 +32,7 @@ class MyTheme {
   static const Color forestGreen = Color(0xff197647);
   static const Color midnightBlue = Color(0xff003366);
   static const Color rubyRed = Color(0xff9b111e);
-  static const Color darkTeal = Color(0xff2A4818);
+  static const Color darkTeal = Color(0xff7D3E7D);
   static const Color burntOrange = Color(0xffcc5500);
   static const Color darkSlateGray = Color(0xff4B4A70);
 
@@ -45,6 +45,6 @@ class MyTheme {
   static const Color tealGreen = Color(0xff349d9d);
   static const Color peach = Color(0xffffdab9);
   static const Color thistle = Color(0xffd8bfd8);
-  static const Color lightCoral = Color(0xfff08080);
+  static const Color lightCoral = Color(0xffFFC79E);
   static const Color paleTurquoise = Color(0xffafeeee);
 }

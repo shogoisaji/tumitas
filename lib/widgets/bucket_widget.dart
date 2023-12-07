@@ -50,7 +50,6 @@ class BucketWidget extends StatelessWidget {
                   bottom: bucket.bucketIntoBlock[i]['position'].positionY * oneBlockSize,
                   child: GestureDetector(
                     onTap: () {
-                      print('tap:${bucket.bucketIntoBlock[i]['block'].title}');
                       showDialog(
                         context: context,
                         builder: (context) {

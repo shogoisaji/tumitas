@@ -21,9 +21,9 @@ List<Color> blockColorList = [
 List<Color> bucketOuterColorList = [
   MyTheme.twilightBlue,
   MyTheme.deepRose,
+  MyTheme.forestGreen,
   MyTheme.darkPurple,
   MyTheme.oliveGold,
-  MyTheme.forestGreen,
   MyTheme.midnightBlue,
   MyTheme.rubyRed,
   MyTheme.darkTeal,

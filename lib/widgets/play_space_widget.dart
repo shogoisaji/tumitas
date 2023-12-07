@@ -46,7 +46,7 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
     nextBlock = widget.nextSettingBlock;
   }
 
-// nextSettingBlockの変更を監視
+// nextSettingBlockの変更を監視。これがないとbottomSheetで選択してもBlockが反映されない。
   @override
   void didUpdateWidget(PlaySpaceWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -70,7 +70,8 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
   }
 
   bool checkAddAvailable(int newPositionY) {
-    if (newPositionY + nextBlock!.blockType.blockSize.y <= bucketLayoutSizeY) return true;
+    if (nextBlock == null) return false;
+    if (newPositionY + nextBlock!.blockType.blockSize.y - 1 < bucketLayoutSizeY) return true;
     return false;
   }
 
@@ -87,26 +88,31 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
       final int duration = (700 ~/ bucketLayoutSizeY) * (bucketLayoutSizeY - newPositionY);
 
       if (!addAvailable) {
-        _shakeAnimationController.forward();
-        if (_shakeAnimationController.status == AnimationStatus.completed) {
+        _shakeAnimationController.repeat();
+        Future.delayed(
+            const Duration(
+              milliseconds: 500,
+            ), () {
           _shakeAnimationController.reset();
-        }
-        return;
-      }
-
-      _swipeDownAnimationController.forward();
-      Future.delayed(
-          Duration(
-            milliseconds: duration,
-          ), () {
-        widget.bucket.addNewBlock(nextBlock!, newPositionX, newPositionY);
-        SqfliteHelper.instance.updateBucketIntoBlock(widget.currentBucketId, widget.bucket);
-        setState(() {
-          nextBlock = null;
-          isSwiped = false;
+          setState(() {
+            isSwiped = false;
+          });
         });
-        _swipeDownAnimationController.reset();
-      });
+      } else {
+        _swipeDownAnimationController.forward();
+        Future.delayed(
+            Duration(
+              milliseconds: duration,
+            ), () {
+          widget.bucket.addNewBlock(nextBlock!, newPositionX, newPositionY);
+          SqfliteHelper.instance.updateBucketIntoBlock(widget.currentBucketId, widget.bucket);
+          setState(() {
+            nextBlock = null;
+            isSwiped = false;
+          });
+          _swipeDownAnimationController.reset();
+        });
+      }
     }
 
     void setNextBlockPosition() {
