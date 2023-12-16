@@ -14,6 +14,7 @@ dependencies:
     intl: ^0.18.1
     uuid: ^4.2.1
     font_awesome_flutter: ^10.6.0
+    rive: ^0.12.3
 
 dev_dependencies:
     flutter_test:
@@ -40,3 +41,4 @@ flutter:
         - assets/images/cloud2.png
         - assets/images/cloud3.png
         - assets/images/cloud4.png
+        - assets/rive/arrow.riv

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 import 'package:tumitas/animations/shake_animation.dart';
 import 'package:tumitas/animations/swipe_down_animation.dart';
 import 'package:tumitas/config/config.dart';
@@ -27,10 +30,13 @@ class PlaySpaceWidget extends StatefulWidget {
 class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderStateMixin {
   late AnimationController _shakeAnimationController;
   late AnimationController _swipeDownAnimationController;
+  late RiveAnimationController _riveController;
   double blockCoordinateX = 0.0;
   double downDistance = 0.0;
   bool isSwiped = false;
+  bool isArrowVisible = false;
   Block? nextBlock;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -43,6 +49,11 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
+    _riveController = OneShotAnimation(
+      'swipe',
+      autoplay: true,
+    );
+    _riveController.isActive = true;
     nextBlock = widget.nextSettingBlock;
   }
 
@@ -62,6 +73,8 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
   void dispose() {
     _shakeAnimationController.dispose();
     _swipeDownAnimationController.dispose();
+    _riveController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -77,10 +90,16 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final double oneBlockSize = (MediaQuery.of(context).size.width - 50) / widget.bucket.bucketLayoutSizeX;
+    final double oneBlockSize = MediaQuery.of(context).size.width > 600
+        ? 120
+        : (MediaQuery.of(context).size.width - 50) / widget.bucket.bucketLayoutSizeX;
 
     Future<void> onSwipeDown() async {
       if (nextBlock == null) return;
+      _timer?.cancel();
+      setState(() {
+        isArrowVisible = false;
+      });
 
       final int newPositionX = (blockCoordinateX + 10) ~/ oneBlockSize; // +10は誤差対策
       final int newPositionY = widget.bucket.getMaxPositionY(nextBlock!, newPositionX) + 1;
@@ -117,6 +136,17 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
 
     void setNextBlockPosition() {
       if (nextBlock == null) return;
+      _timer?.cancel();
+      setState(() {
+        isArrowVisible = false;
+      });
+      _timer = Timer(const Duration(milliseconds: 1500), () {
+        print('timer');
+        setState(() {
+          isArrowVisible = true;
+        });
+        _riveController.isActive = true;
+      });
       setState(() {
         blockCoordinateX = ((blockCoordinateX + oneBlockSize / 2) ~/ oneBlockSize) * oneBlockSize;
         if (blockCoordinateX >
@@ -211,6 +241,17 @@ class _PlaySpaceWidgetState extends State<PlaySpaceWidget> with TickerProviderSt
                   ),
                 ),
               ),
+              isArrowVisible
+                  ? Positioned(
+                      top: oneBlockSize * 2 + 10,
+                      left: oneBlockSize * 2.5 - 100,
+                      child: SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: RiveAnimation.asset('assets/rive/arrow.riv',
+                              controllers: [_riveController], fit: BoxFit.contain)),
+                    )
+                  : Container(),
             ],
           ),
         ),

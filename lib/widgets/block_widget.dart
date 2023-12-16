@@ -15,6 +15,7 @@ class BlockWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderRadius = oneBlockSize / 7;
+    final titleFontSize = oneBlockSize / 5;
 
     String formatDate(String dateStr) {
       DateTime dateTime = DateTime.parse(dateStr);
@@ -67,7 +68,7 @@ class BlockWidget extends StatelessWidget {
                       child: Text(
                         formatDate(block.blockRegisterDate.toIso8601String()),
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: titleFontSize / 1.5,
                           color: Colors.black.withOpacity(0.6),
                         ),
                       ),

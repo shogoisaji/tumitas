@@ -23,7 +23,6 @@ class _ArchivePageState extends State<ArchivePage> with TickerProviderStateMixin
   late AnimationController _textAnimationController;
   late AnimationController _bandAnimationController;
   late CurvedAnimation bandCurvedAnimation;
-  final double oneBlockSize = 25;
 
   @override
   void initState() {
@@ -57,6 +56,7 @@ class _ArchivePageState extends State<ArchivePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final double oneBlockSize = MediaQuery.of(context).size.width / 15;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Stack(

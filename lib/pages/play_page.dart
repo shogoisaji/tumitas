@@ -109,7 +109,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
               CloudAnimation(
                 duration: 9,
                 child: Transform.translate(
-                  offset: const Offset(80, 30),
+                  offset: Offset(MediaQuery.of(context).size.width / 10, 30),
                   child: Image.asset(
                     'assets/images/cloud3.png',
                     fit: BoxFit.cover,
@@ -118,20 +118,9 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                 ),
               ),
               CloudAnimation(
-                duration: 11,
-                child: Transform.translate(
-                  offset: const Offset(10, 60),
-                  child: Image.asset(
-                    'assets/images/cloud1.png',
-                    fit: BoxFit.cover,
-                    width: 120,
-                  ),
-                ),
-              ),
-              CloudAnimation(
                 duration: 13,
                 child: Transform.translate(
-                  offset: const Offset(220, 40),
+                  offset: Offset(MediaQuery.of(context).size.width / 2, 40),
                   child: Image.asset(
                     'assets/images/cloud2.png',
                     fit: BoxFit.cover,
@@ -140,9 +129,20 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                 ),
               ),
               CloudAnimation(
+                duration: 11,
+                child: Transform.translate(
+                  offset: Offset(MediaQuery.of(context).size.width / 5, 60),
+                  child: Image.asset(
+                    'assets/images/cloud1.png',
+                    fit: BoxFit.cover,
+                    width: 120,
+                  ),
+                ),
+              ),
+              CloudAnimation(
                 duration: 10,
                 child: Transform.translate(
-                  offset: const Offset(150, 80),
+                  offset: Offset(MediaQuery.of(context).size.width / 6, 80),
                   child: Image.asset(
                     'assets/images/cloud4.png',
                     fit: BoxFit.cover,
